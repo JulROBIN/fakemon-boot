@@ -1,6 +1,6 @@
 package service;
 
-import static application.Application.saisieInt;
+import static fr.project.FakemonBootApplication.saisieInt;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

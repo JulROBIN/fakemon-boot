@@ -19,8 +19,8 @@ import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import static application.Application.saisieInt;
-import static application.Application.saisieString;
+import static fr.project.FakemonBootApplication.saisieInt;
+import static fr.project.FakemonBootApplication.saisieString;
 import service.ContextService;
 
 //	Déclaration Attribut
@@ -522,11 +522,11 @@ public class Monster {
 	@JsonIgnore
 	public Attaque choixAttaque() {
 		this.listAttaque.forEach(a -> System.out.println("- "+a.getNom()+" ["+a.getType()+", "+a.getEtat()+"] : Puissance = "+a.getPuissance()+", Precision = "+a.getPrecision()));
-		int sc = saisieInt("Quelle attaque ? (1 � "+this.listAttaque.size()+")");
+		int sc = saisieInt("Quelle attaque ? (1 � "+this.listAttaque.size()+")");
 
 		while ( sc < 1 || sc > this.listAttaque.size() ) {
 			System.out.println("Mauvaise saisie. Veuillez recommencer");
-			sc = saisieInt("Quelle attaque ? (1 � "+this.listAttaque.size()+")");
+			sc = saisieInt("Quelle attaque ? (1 � "+this.listAttaque.size()+")");
 		}
 		
 		return listAttaque.get(sc-1);
@@ -837,7 +837,7 @@ public class Monster {
 	@JsonIgnore
 	public String toStringDetailStat() {
 
-		return "Niveau = " + level + ", Point de Vie = " + pv + ", Attaque = " + atk + ", D�fense = " + def + ", Attaque Spéciale = " + aSp + ", Défense Spéciale = " + dSp + ", Vitesse = " + vit + ", tabNature = " + Arrays.toString(tabNature);
+		return "Niveau = " + level + ", Point de Vie = " + pv + ", Attaque = " + atk + ", D�fense = " + def + ", Attaque Spéciale = " + aSp + ", Défense Spéciale = " + dSp + ", Vitesse = " + vit + ", tabNature = " + Arrays.toString(tabNature);
 
 	}
 

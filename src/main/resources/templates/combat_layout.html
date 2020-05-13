@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org" th:fragment="layout(content)">
+	<head>
+		<meta charset="ISO-8859-1">
+		<title>Combat</title>
+		<script src="assets/js/combatMechanics.js"></script>
+		<style>
+		@keyframes toaster{
+			0%	{left:-100vw}
+			100%	{left:-15vw}
+		}
+		.toast-it{
+			animation-name:toaster;
+			animation-duration:1s;
+			animation-direction:alternate;
+		}
+		</style>
+	</head>
+	<body th:replace="${content}" style="100vh"> 
+	</body> 
+</html>

@@ -18,12 +18,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.project.model.Monster;
-import fr.project.service.PlayerService;
+import fr.project.model.Player;
+
 @Controller
 @RequestMapping("/player")
 public class PlayerMechanics {
 	@Autowired
-	PlayerService player;
+	Player player;
 	// Attribut temporaire le temps de trouver mieux
 	ArrayList<String> seenMonsters = new ArrayList<String>();
 	/**
@@ -51,7 +52,6 @@ public class PlayerMechanics {
 			try {
 				returnBody = om.writeValueAsString(m);
 			} catch (JsonProcessingException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -83,7 +83,6 @@ public class PlayerMechanics {
 			 playerInfos = om.writeValueAsString(player);
 			//System.out.println(playerInfos);
 		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return playerInfos;
@@ -113,7 +112,6 @@ public class PlayerMechanics {
 		try {
 			jsonToReturn = om.writeValueAsString(player.getEquipePlayer());
 		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

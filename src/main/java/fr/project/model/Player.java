@@ -60,7 +60,9 @@ public class Player {
 		}
 		return starters;
 	}
-
+	public PlayerService getPlayerService() {
+		return this.player;
+	}
 	
 	//______________________________________________________________________________
 	//	Méthodes

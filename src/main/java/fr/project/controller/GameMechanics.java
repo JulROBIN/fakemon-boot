@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.project.model.Dresseur;
+import fr.project.model.Player;
 import fr.project.service.ContextService;
 import fr.project.service.PlayerService;
 
@@ -25,7 +26,7 @@ import fr.project.service.PlayerService;
 public class GameMechanics {
 	
 	@Autowired
-	PlayerService player;
+	Player player;
 	@Autowired
 	ContextService ctx;
 	
@@ -115,7 +116,7 @@ public class GameMechanics {
 		LinkedList<Dresseur> arene = new LinkedList<Dresseur>();
 		System.out.println("genere une arene");
 		for(int i =0; i<1;i++) {
-			arene.add(new Dresseur(i, player));
+			arene.add(new Dresseur(i, player.getPlayerService()));
 		}
 		
 		request.getSession().setAttribute("arene", arene);
@@ -125,7 +126,7 @@ public class GameMechanics {
 	@ResponseBody
 	public String getDresseur(HttpServletRequest request) {
 		System.out.println("taille arene : "+ctx.getArene().size());
-		ObjectMapper om = new ObjectMapper();
+		ObjectMapper om = new ObjectMapper();	//	C'est quoi ça ???
 		String dresseur="";
 		System.out.println("dresseur");
 		System.out.println(request.getSession().getAttribute("dresseur"));

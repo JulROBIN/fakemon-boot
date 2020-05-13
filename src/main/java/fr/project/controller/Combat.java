@@ -21,15 +21,15 @@ import fr.project.model.Action;
 import fr.project.model.Dresseur;
 import fr.project.model.Monster;
 import fr.project.model.PVException;
+import fr.project.model.Player;
 import fr.project.service.ContextService;
-import fr.project.service.PlayerService;
 
 @Controller
 @RequestMapping("/combat")
 public class Combat {
 
 	@Autowired
-	PlayerService player;
+	Player player;
 	@Autowired
 	ContextService ctx;
 	
@@ -75,7 +75,7 @@ public class Combat {
 	public String capture(HttpServletRequest request) {
 		Monster m = (Monster) request.getSession().getAttribute("adversaire");
 		StringBuffer sb = new StringBuffer();
-		Action a = player.captureMonstreFront(m);
+		Action a = player.captureMonstre(m);
 		sb.append("{");
 		if(a.getM() == null) {
 			sb.append("\"playerTurn\" : false,\"msg\" : \"").append(a.getMessage()).append("\",\"endFight\" : false, \"status\" : \"capture\"");
@@ -101,7 +101,6 @@ public class Combat {
 			sb.append("{ \"attaquant\" : ").append(om.writeValueAsString((Monster)request.getSession().getAttribute("attaquant"))).append(",");
 			sb.append(" \"adversaire\" : ").append(om.writeValueAsString((Monster)request.getSession().getAttribute("adversaire"))).append("}");
 		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
 		return sb.toString();
@@ -132,7 +131,6 @@ public class Combat {
 				sb.append("\"playerTurn\":false");
 				sb.append(",\"endFight\":"+false+",\"msg\": \""+act.getMessage()+"\"");
 			} catch (PVException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				
 				String localisation = (String) request.getSession().getAttribute("localisation");
@@ -177,7 +175,6 @@ public class Combat {
 			request.getSession().setAttribute("adversaire", m2);
 			
 		} catch (JsonProcessingException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
@@ -213,7 +210,6 @@ public class Combat {
 				sb.append("\"playerTurn\":true");
 				sb.append(",\"endFight\":"+false+",\"msg\": \""+act.getMessage()+"\"");
 			} catch (PVException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				System.out.println("taille equipe joueur : "+player.getEquipePlayer().size());
 				if(player.checkEquipeJoueur()) {
@@ -228,7 +224,6 @@ public class Combat {
 			request.getSession().setAttribute("attaquant", m2);
 			request.getSession().setAttribute("adversaire", m1);
 		} catch (JsonProcessingException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		sb.append(",\"status\" : \"attaque\"}");

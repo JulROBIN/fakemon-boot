@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import dao.IDAOAttaque;
-import dao.IDAOMonster;
+import fr.project.dao.IDAOAttaque;
+import fr.project.dao.IDAOMonster;
 import fr.project.model.Attaque;
 import fr.project.model.Dresseur;
 import fr.project.model.Efficacite;

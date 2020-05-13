@@ -16,7 +16,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import dao.IDAOMonster;
+import fr.project.dao.IDAOMonster;
 import fr.project.model.Action;
 import fr.project.model.Dresseur;
 import fr.project.model.Monster;

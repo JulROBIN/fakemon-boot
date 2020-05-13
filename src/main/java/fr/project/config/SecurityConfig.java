@@ -10,10 +10,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Configuration
-@EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-@Profile("!dev")
+//	@Configuration
+//	@EnableWebSecurity
+//	@EnableGlobalMethodSecurity(prePostEnabled = true)
+//	@Profile("!dev")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Bean

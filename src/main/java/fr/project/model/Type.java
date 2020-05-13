@@ -1,4 +1,4 @@
-package model;
+package fr.project.model;
 
 public enum Type {
 Feu,Eau,Plante,Electrique,Sol,Roche,Neutre;

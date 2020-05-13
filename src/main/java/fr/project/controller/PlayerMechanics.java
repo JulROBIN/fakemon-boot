@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import model.Monster;
-import service.PlayerService;
+import fr.project.model.Monster;
+import fr.project.service.PlayerService;
 @Controller
 @RequestMapping("/player")
 public class PlayerMechanics {

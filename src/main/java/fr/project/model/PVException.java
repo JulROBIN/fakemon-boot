@@ -1,4 +1,4 @@
-package model;
+package fr.project.model;
 
 public class PVException extends Exception {
 

@@ -6,8 +6,8 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import model.Attaque;
-import model.Efficacite;
+import fr.project.model.Attaque;
+import fr.project.model.Efficacite;
 
 public interface IDAOAttaque extends JpaRepository<Attaque, Integer> {
 

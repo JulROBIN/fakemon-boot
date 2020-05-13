@@ -17,12 +17,12 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dao.IDAOMonster;
-import model.Action;
-import model.Dresseur;
-import model.Monster;
-import model.PVException;
-import service.ContextService;
-import service.PlayerService;
+import fr.project.model.Action;
+import fr.project.model.Dresseur;
+import fr.project.model.Monster;
+import fr.project.model.PVException;
+import fr.project.service.ContextService;
+import fr.project.service.PlayerService;
 
 @Controller
 @RequestMapping("/combat")

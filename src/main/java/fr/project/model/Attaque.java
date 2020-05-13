@@ -1,4 +1,4 @@
-package model;
+package fr.project.model;
 
 import java.io.Serializable;
 import java.util.stream.Collectors;

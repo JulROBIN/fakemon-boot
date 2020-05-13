@@ -1,4 +1,4 @@
-package model;
+package fr.project.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,9 +19,10 @@ import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import fr.project.service.ContextService;
+
 import static fr.project.FakemonBootApplication.saisieInt;
 import static fr.project.FakemonBootApplication.saisieString;
-import service.ContextService;
 
 //	Déclaration Attribut
 @Entity

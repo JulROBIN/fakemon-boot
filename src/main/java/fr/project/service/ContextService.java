@@ -1,4 +1,4 @@
-package service;
+package fr.project.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,10 +14,10 @@ import org.springframework.stereotype.Service;
 
 import dao.IDAOAttaque;
 import dao.IDAOMonster;
-import model.Attaque;
-import model.Dresseur;
-import model.Efficacite;
-import model.Monster;
+import fr.project.model.Attaque;
+import fr.project.model.Dresseur;
+import fr.project.model.Efficacite;
+import fr.project.model.Monster;
 
 @Service
 public class ContextService {

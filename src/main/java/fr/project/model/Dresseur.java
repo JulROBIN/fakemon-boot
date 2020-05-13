@@ -1,4 +1,4 @@
-package model;
+package fr.project.model;
 
 import java.util.LinkedList;
 import java.util.Random;
@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import service.PlayerService;
+import fr.project.service.PlayerService;
 
 public class Dresseur {
 	protected LinkedList<Monster> equipeDresseur = new LinkedList<Monster>(); 

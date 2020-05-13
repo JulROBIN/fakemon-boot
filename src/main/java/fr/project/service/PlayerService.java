@@ -1,4 +1,4 @@
-package service;
+package fr.project.service;
 
 import static fr.project.FakemonBootApplication.saisieInt;
 
@@ -9,9 +9,9 @@ import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import model.Action;
-import model.Monster;
-import model.Situation;
+import fr.project.model.Action;
+import fr.project.model.Monster;
+import fr.project.model.Situation;
 
 @Service
 public class PlayerService {

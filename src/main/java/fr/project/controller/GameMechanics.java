@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import model.Dresseur;
-import service.ContextService;
-import service.PlayerService;
+import fr.project.model.Dresseur;
+import fr.project.service.ContextService;
+import fr.project.service.PlayerService;
 
 @Controller
 @RequestMapping("/mechanics")

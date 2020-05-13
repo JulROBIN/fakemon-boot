@@ -22,25 +22,20 @@ import fr.project.model.Monster;
 @Service
 public class ContextService {
 
-	/*private Connection connect = null;*/
-	//AnnotationConfigApplicationContext myContext = new AnnotationConfigApplicationContext(fakemonConfig.class);
 	@Autowired
-	private IDAOAttaque daoAttaque;// = myContext.getBean(IDAOAttaque.class);
+	private IDAOAttaque daoAttaque;
+	
 	@Autowired
-	private IDAOMonster daoMonster; // = myContext.getBean(IDAOMonster.class);
+	private IDAOMonster daoMonster;
+	
+	@Autowired
+	private PlayerService player;
+	
 	private ArrayList<Monster> monstresProposition = null;
 	
 	private LinkedList<Dresseur> arene;
 
-	@Autowired
-	private PlayerService player;
-
-	/*public Connection getConnect() {
-		return connect;
-	}
-	public void setConnect(Connection connect) {
-		this.connect = connect;
-	}*/
+	
 	public IDAOMonster getDaoMonster() {
 		return daoMonster;
 	}
@@ -53,13 +48,10 @@ public class ContextService {
 	public void setDaoAttaque(IDAOAttaque daoAttaque) {
 		this.daoAttaque = daoAttaque;
 	}
-	/*
-	public Connection getConnection() throws SQLException, ClassNotFoundException {
-		Class.forName("com.mysql.jdbc.Driver");
-		connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/fakemon","root","");
 
-		return connect;
-	}*/
+
+	
+	
 	public List<Monster> getMonstresProposition(){
 		if(monstresProposition == null) {
 			monstresProposition = new ArrayList<Monster>();

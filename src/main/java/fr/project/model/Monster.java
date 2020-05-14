@@ -185,7 +185,6 @@ public class Monster {
 	public void setEquipeDresseur() {
 		equipeJoueur=Situation.valueOf("Adversaire");
 	}
-
 	public int getId() {
 		return id;
 	}
@@ -201,12 +200,9 @@ public class Monster {
 	public int getLevel() {
 		return level;
 	}
-
-
 	public int getPv() {
 		return pv;
 	}
-
 	public void setPv(int pv) {
 		this.pv = pv;
 	}
@@ -218,40 +214,30 @@ public class Monster {
 	public void setPvMax(int pvMax) {
 		this.pvMax = pvMax;
 	}
-
 	public int getAtk() {
 		return atk;
 	}
-
 	public void setAtk(int atk) {
 		this.atk = atk;
 	}
-
-
 	public int getaSp() {
 		return aSp;
 	}
-
 	public void setaSp(int aSp) {
 		this.aSp = aSp;
 	}
-
 	public int getdSp() {
 		return dSp;
 	}
-
 	public void setdSp(int dSp) {
 		this.dSp = dSp;
 	}
-
 	public int getDef() {
 		return def;
 	}
-
 	public int getVit() {
 		return vit;
 	}
-
 	public Type getType() {
 		return type;
 	}
@@ -265,22 +251,18 @@ public class Monster {
 	public String getNom(){
 		return this.nom;
 	}
-
 	public ArrayList<Attaque> getListAttaque() {
 		return listAttaque;	
 	}
-
 	public int getExpNextLevel () {
 		return expNextLevel;
 	}
-
 	public UUID getUniqueId() {
 		return uniqueId;
 	}
-
 	@JsonIgnore
 	public int getExpGain() {
-		int c= (2 + (int)(level + Math.pow(level,2)) /2);
+		int c = (2 + (int)(level + Math.pow(level,2)) /2);
 		return c;
 	}
 	@JsonIgnore
@@ -326,7 +308,6 @@ public class Monster {
 	public int getExp() {
 		return exp;
 	}
-
 	public void setExp(int exp) {
 		this.exp = exp;
 	}

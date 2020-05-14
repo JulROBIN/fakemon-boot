@@ -7,20 +7,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.project.model.Monster;
+import fr.project.model.Player;
 
 @Service
 public class PlayerService {
 
 	@Autowired
 	private ContextService context;
-
-
 	
-
-
-
-	
-	
+	//______________________________________________________________________________
+		
+	public ContextService getContext() {
+		return context;
+	}
+	public void setContext(ContextService context) {
+		this.context = context;
+	}
 	
 	//______________________________________________________________________________
 	//	Méthodes
@@ -45,6 +47,17 @@ public class PlayerService {
 			tableRencontre.add(m);
 		}
 		return tableRencontre;
+	}
+
+	
+	/**	Generation d'une liste de 6 monstres pour faire les starters
+	 * @return ArrayList<Monster> ; Liste des 6 monstres servant de starters
+	 **/
+	public ArrayList<Monster> getStarters(Player sacha) {
+		if(sacha.getStarters().isEmpty()) {
+			sacha.setStarters(tableRencontre(6));
+		}
+		return sacha.getStarters();
 	}
 
 

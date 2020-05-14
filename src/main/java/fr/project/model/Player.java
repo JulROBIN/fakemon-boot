@@ -22,8 +22,8 @@ public class Player {
 	private int maxArene = 4;	//	Nombre de dresseur de l'arène, sachant que le 1 et le dernier sont fixé. Doit être >= 2
 	private int cptArene = 0;
 
-	@Autowired
-	private PlayerService player;
+/*	@Autowired
+	private PlayerService player;*/
 
 	//	Getters Setters et apparentés
 	public LinkedList<Monster> getEquipePlayer() {
@@ -51,22 +51,55 @@ public class Player {
 	public void setIdScene(int idScene) {
 		this.idScene = idScene;
 	}
-	/**	Generation d'une liste de 6 monstres pour faire les starters
-	 * @return ArrayList<Monster> ; Liste des 6 monstres servant de starters
-	 **/
-	public ArrayList<Monster> getStarters() {
-		if(starters.isEmpty()) {
-			starters = player.tableRencontre(6);
-		}
-		return starters;
-	}
-	public PlayerService getPlayerService() {
+/*	public PlayerService getPlayerService() {
 		return this.player;
 	}
+	public void setPlayerService(PlayerService player) {
+		this.player = player;
+	}*/
+	public String getNom() {
+		return nom;
+	}
+	public void setNom(String nom) {
+		this.nom = nom;
+	}
+	public int getMaxRencontre() {
+		return maxRencontre;
+	}
+	public void setMaxRencontre(int maxRencontre) {
+		this.maxRencontre = maxRencontre;
+	}
+	public int getCptRencontre() {
+		return cptRencontre;
+	}
+	public void setCptRencontre(int cptRencontre) {
+		this.cptRencontre = cptRencontre;
+	}
+	public int getMaxArene() {
+		return maxArene;
+	}
+	public void setMaxArene(int maxArene) {
+		this.maxArene = maxArene;
+	}
+	public int getCptArene() {
+		return cptArene;
+	}
+	public void setCptArene(int cptArene) {
+		this.cptArene = cptArene;
+	}
+	public ArrayList<Monster> getStarters() {
+		return starters;
+	}
+	public void setStarters(ArrayList<Monster> starters) {
+		this.starters = starters;
+	}
+	
 	
 	//______________________________________________________________________________
 	//	Méthodes
 
+	
+	
 	/** Remet tout les monstres du joueur en sitation quiescente (PV, modifsStats...), par exemple après un combat 
 	 **/
 	public void soinEquipeJoueur() {
@@ -151,9 +184,9 @@ public class Player {
 	
 	/**	Crée une sélection aléatoire de six monstres puis le joueur doit en choisir un comme monstre de départ
 	 **/
-	public void selectionStarter () {
+	public void selectionStarter (ArrayList<Monster> table2Chen) {
 
-		ArrayList<Monster> table2Chen = player.tableRencontre(6);
+	//	ArrayList<Monster> table2Chen = player.tableRencontre(6);
 		table2Chen.forEach(mi -> System.out.println(mi.toStringGeneral()));
 		int i=0;
 		while (i<1 || i>6) {
@@ -177,11 +210,11 @@ public class Player {
 	/**	FRONT UNIQUEMENT
 	 * @return
 	 **/
-	public Monster rencontreSauvage() {
+	public Monster rencontreSauvage(Monster m) {
 		this.cptRencontre++;
-		Monster  m = null;
+//		Monster  m = null;
 		if(this.cptRencontre <= this.maxRencontre) {
-			m = this.player.tableRencontre(1).get(0);
+//			m = this.player.tableRencontre(1).get(0);
 			if (this.cptRencontre >= (this.maxRencontre*4)/5) {
 				m.levelUp();
 				m.levelUp();
@@ -249,5 +282,13 @@ public class Player {
 		}
 		return a;
 	}
+	
+	
 
+	
+
+	
+	
+	
+	
 }

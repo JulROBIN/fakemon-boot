@@ -17,9 +17,9 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.project.dao.IDAOMonster;
+import fr.project.dao.IDAOPlayer;
 import fr.project.model.Action;
 import fr.project.model.Dresseur;
-import fr.project.model.Monster;
 import fr.project.model.PVException;
 import fr.project.model.Player;
 import fr.project.service.ContextService;
@@ -33,19 +33,23 @@ public class Combat {
 	@Autowired
 	ContextService ctx;
 	
+	@Autowired
+	IDAOPlayer daoP;
+	
+	Player p;
 	
 	@Autowired
 	IDAOMonster daoM;
 	
 	@PostMapping("/")
 	public String launchCombat(@RequestParam Map<String,String> data, HttpServletRequest request) {
-
+		p = daoP.getOne((int)request.getSession().getAttribute("player"));
 		System.out.println("Test "+data.get("mstrId"));
-		Monster playerMonster =  player.getEquipePlayer().stream().filter(m -> m.getUniqueId().toString().equals(data.get("mstrId"))).findAny().get();
+		MonsterService playerMonster =  p.getEquipePlayer().stream().filter(m -> m.getUniqueId().toString().equals(data.get("mstrId"))).findAny().get();
 		request.getSession().setAttribute("attaquant", playerMonster);
 		try {
 			if(request.getSession().getAttribute("localisation").equals("wilds")) {
-				request.getSession().setAttribute("adversaire", player.rencontreSauvage());
+				request.getSession().setAttribute("adversaire", player.tableRencontre(1).get(0));
 			}
 		}catch(Exception e) {
 			System.out.println("pas d'attribut \"location\"");
@@ -57,9 +61,9 @@ public class Combat {
 	@PostMapping("switch")
 	@ResponseBody
 	public boolean switchMonster(@RequestParam String entity, @RequestParam String id, HttpServletRequest request) {
-		
+		p = daoP.getOne((int)request.getSession().getAttribute("player"));
 		if(entity.contentEquals("player")) {
-			Monster m = player.getEquipePlayer().parallelStream().filter(mon -> mon.getUniqueId().toString().equals(id)).findFirst().get();
+			MonsterService m = p.getEquipePlayer().parallelStream().filter(mon -> mon.getUniqueId().toString().equals(id)).findFirst().get();
 			System.out.println("LE MONSTRE : "+m);
 			request.getSession().setAttribute("attaquant", m);
 		}
@@ -73,9 +77,10 @@ public class Combat {
 	@GetMapping("/capture")
 	@ResponseBody
 	public String capture(HttpServletRequest request) {
-		Monster m = (Monster) request.getSession().getAttribute("adversaire");
+		p = daoP.getOne((int)request.getSession().getAttribute("player"));
+		MonsterService m = (MonsterService) request.getSession().getAttribute("adversaire");
 		StringBuffer sb = new StringBuffer();
-		Action a = player.captureMonstre(m);
+		Action a = p.captureMonstre(m);
 		sb.append("{");
 		if(a.getM() == null) {
 			sb.append("\"playerTurn\" : false,\"msg\" : \"").append(a.getMessage()).append("\",\"endFight\" : false, \"status\" : \"capture\"");
@@ -98,8 +103,8 @@ public class Combat {
 		om.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
 
 		try {
-			sb.append("{ \"attaquant\" : ").append(om.writeValueAsString((Monster)request.getSession().getAttribute("attaquant"))).append(",");
-			sb.append(" \"adversaire\" : ").append(om.writeValueAsString((Monster)request.getSession().getAttribute("adversaire"))).append("}");
+			sb.append("{ \"attaquant\" : ").append(om.writeValueAsString((MonsterService)request.getSession().getAttribute("attaquant"))).append(",");
+			sb.append(" \"adversaire\" : ").append(om.writeValueAsString((MonsterService)request.getSession().getAttribute("adversaire"))).append("}");
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}	
@@ -116,13 +121,13 @@ public class Combat {
 		System.out.println("Atttaque : "+atkId);
 		StringBuffer sb = new StringBuffer();
 		sb.append("{");
-		Monster m1;
-		Monster m2;
+		MonsterService m1;
+		MonsterService m2;
 		
 		try {
-			Monster monster = om.readValue(data.get("attaquant"), Monster.class);
-			m1 = player.getEquipePlayer().stream().filter(m -> m.getUniqueId().toString().equals(monster.getUniqueId().toString())).findAny().get();
-			m2 = om.readValue(data.get("adversaire"), Monster.class);
+			MonsterService monster = om.readValue(data.get("attaquant"), MonsterService.class);
+			m1 = p.getEquipePlayer().stream().filter(m -> m.getUniqueId().toString().equals(monster.getUniqueId().toString())).findAny().get();
+			m2 = om.readValue(data.get("adversaire"), MonsterService.class);
 
 			try {
 				
@@ -142,7 +147,7 @@ public class Combat {
 					System.out.println(d);
 					if(d.getEquipeDresseur().size()>0) {
 						d.getEquipeDresseur().forEach(System.out::println);
-						Monster mTemp = d.getEquipeDresseur().stream().filter(mDresseur -> mDresseur.getUniqueId().toString().equals(uidMonstre)).findFirst().get();
+						MonsterService mTemp = d.getEquipeDresseur().stream().filter(mDresseur -> mDresseur.getUniqueId().toString().equals(uidMonstre)).findFirst().get();
 						d.getEquipeDresseur().remove(mTemp);
 						if(d.checkEquipeDresseur()) {
 							m2 = d.getEquipeDresseur().peek();
@@ -150,20 +155,20 @@ public class Combat {
 							sb.append(",\"endFight\":"+false+",\"msg\": \""+d.getNom()+" change de monstre pour "+m2.getNom()+"\"");
 						}else {
 							m1.getExpGain();
-							player.soinEquipeJoueur();
+							p.soinEquipeJoueur();
 							sb.append("\"playerTurn\":false");
 							sb.append(",\"endFight\":"+true+",\"msg\": \"Fin du combat !!\\n Tu as battu "+d.getNom()+"\"");
 						}
 					}else {
 						m1.getExpGain();
-						player.soinEquipeJoueur();
+						p.soinEquipeJoueur();
 						sb.append("\"playerTurn\":false");
 						sb.append(",\"endFight\":"+true+",\"msg\": \"Fin du combat !!\\n Tu as battu "+d.getNom()+"\"");						
 					}
 				}else {
 					if(m1.getPv() > 0)
 						m1.getExpGain();
-					player.soinEquipeJoueur();
+					p.soinEquipeJoueur();
 					sb.append("\"playerTurn\":false");
 					sb.append(",\"endFight\":"+true+",\"msg\": \"Fin du combat !!\"");
 				}
@@ -195,13 +200,13 @@ public class Combat {
 		StringBuffer sb = new StringBuffer();
 		sb.append("{");
 		
-		Monster m1;
-		Monster m2;
+		MonsterService m1;
+		MonsterService m2;
 		ObjectMapper om = new ObjectMapper();
 		try {
-			Monster monster = om.readValue(data.get("attaquant"), Monster.class);
-			m2 = player.getEquipePlayer().stream().filter(m -> m.getUniqueId().toString().equals(monster.getUniqueId().toString())).findAny().get();
-			m1 = om.readValue(data.get("adversaire"), Monster.class);	
+			MonsterService monster = om.readValue(data.get("attaquant"), MonsterService.class);
+			m2 = p.getEquipePlayer().stream().filter(m -> m.getUniqueId().toString().equals(monster.getUniqueId().toString())).findAny().get();
+			m1 = om.readValue(data.get("adversaire"), MonsterService.class);	
 			
 			try {
 				int atkId = m1.choixAttaqueBOT(m2,ctx).getId();
@@ -211,12 +216,12 @@ public class Combat {
 				sb.append(",\"endFight\":"+false+",\"msg\": \""+act.getMessage()+"\"");
 			} catch (PVException e) {
 				e.printStackTrace();
-				System.out.println("taille equipe joueur : "+player.getEquipePlayer().size());
-				if(player.checkEquipeJoueur()) {
+				System.out.println("taille equipe joueur : "+p.getEquipePlayer().size());
+				if(p.checkEquipeJoueur()) {
 					sb.append("\"playerTurn\":true");
 					sb.append(",\"endFight\":"+false+",\"msg\": \""+m2.getNom()+" est K.O !\"");
 				}else {
-					player.soinEquipeJoueur();
+					p.soinEquipeJoueur();
 					sb.append("\"playerTurn\":false");
 					sb.append(",\"endFight\":"+true+",\"msg\": \"Fin du combat !!\"");
 				}

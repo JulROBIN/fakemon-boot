@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fr.project.dao.IDAOPlayer;
 import fr.project.model.Dresseur;
 import fr.project.model.Player;
 import fr.project.service.ContextService;
@@ -29,20 +30,24 @@ public class GameMechanics {
 	Player player;
 	@Autowired
 	ContextService ctx;
-	
+	Player p;
+	@Autowired
+	IDAOPlayer daoP;
 	
 	@PostMapping("/session")
 	@ResponseBody
 	public void resetSession(HttpServletRequest request) {
 		request.getSession().invalidate();
+		request.getSession().setAttribute("player", 1);
+		System.out.println(daoP.findById(1).get());
 	}
 	
 	@GetMapping("/scene/setup")
 	@ResponseBody
 	public String getSceneSetup(HttpServletRequest request) {
-
+		p = daoP.getOne((int)request.getSession().getAttribute("player"));
 		String rencontre = "";
-		if(player.peutRencontrer()) {
+		if(p.peutRencontrer()) {
 			Random r = new Random();
 			//	Set la position de la rencontre avec le fakemon sauvage. La position ne peut être sur les bordures et est positionné sur la partie basse de la carte
 			rencontre =  "["+(r.nextInt(8)+1)+","+(r.nextInt(4)+5)+"]";
@@ -67,10 +72,10 @@ public class GameMechanics {
 		scenes.add(scene0);
 		scenes.add(scene1);
 		scenes.add(scene2);
-		if(player.getIdScene() == 0) {
-			return scenes.get(player.getIdScene());
+		if(p.getIdScene() == 0) {
+			return scenes.get(p.getIdScene());
 		}else {
-			return scenes.get(player.getIdScene()-1);
+			return scenes.get(p.getIdScene()-1);
 		}
 		
 	}
@@ -79,7 +84,7 @@ public class GameMechanics {
 	@ResponseBody
 	public String getSceneById(@PathVariable int id) {
 		String rencontre = "";
-		if(player.peutRencontrer()) {
+		if(p.peutRencontrer()) {
 			Random r = new Random();
 			rencontre =  "["+r.nextInt(9)+","+(r.nextInt(4)+5)+"]";
 		}
@@ -116,7 +121,7 @@ public class GameMechanics {
 		LinkedList<Dresseur> arene = new LinkedList<Dresseur>();
 		System.out.println("genere une arene");
 		for(int i =0; i<1;i++) {
-			arene.add(new Dresseur(i, player.getPlayerService()));
+			arene.add(new Dresseur(i, player));
 		}
 		
 		request.getSession().setAttribute("arene", arene);

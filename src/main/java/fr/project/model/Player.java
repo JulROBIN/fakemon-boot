@@ -2,40 +2,73 @@ package fr.project.model;
 
 import static fr.project.FakemonBootApplication.saisieInt;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
-import fr.project.service.PlayerService;
-
+import fr.project.model.MonsterEntity;
+@Entity
+@Table(name= "player")
 public class Player {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	protected int id;
+	
+	@Column(name="nom")
 	protected String nom = "Sacha";
-	protected LinkedList<Monster> equipePlayer = new LinkedList<Monster>();
-	protected ArrayList<Monster> starters = new ArrayList<Monster>();	//	Est-ce-que ça sert vraiment à quelque chose de conserver la liste des starter ???
+	
+	@ManyToMany
+	@JoinTable(
+			name = "equipes",
+			uniqueConstraints = @UniqueConstraint(columnNames = { "id_player", "id_monstre" }),
+			joinColumns = @JoinColumn(name = "id_player", referencedColumnName = "id"),
+			inverseJoinColumns = @JoinColumn(name = "id_monstre", referencedColumnName = "id")
+		)
+	protected List<MonsterEntity> equipePlayer = new LinkedList<MonsterEntity>();
+	//protected ArrayList<Monster> starters = new ArrayList<Monster>();	//	Est-ce-que ça sert vraiment à quelque chose de conserver la liste des starter ???
+	
 	protected int[] position = new int[] {0,0};
+	
+	@Column(name="id_scene")
 	private int idScene = 0;
+	@Column(name="maxRencontre")
 	private int maxRencontre = 10;
+	@Column(name="cptRencontre")
 	private int cptRencontre = 0;
-	private int maxArene = 4;	//	Nombre de dresseur de l'arène, sachant que le 1 et le dernier sont fixé. Doit être >= 2
+	@Column(name="maxArene")
+	private int maxArene = 4;
+	@Column(name="cptArene")//	Nombre de dresseur de l'arène, sachant que le 1 et le dernier sont fixé. Doit être >= 2
 	private int cptArene = 0;
 
-	@Autowired
-	private PlayerService player;
+	private PlayerService player;*/
+/*	@Autowired
+
+>>>>>>> Stashed changes
 
 	//	Getters Setters et apparentés
-	public LinkedList<Monster> getEquipePlayer() {
-		return this.equipePlayer;
+	public LinkedList<MonsterEntity> getEquipePlayer() {
+		return (LinkedList)this.equipePlayer;
 	}
-	public void setEquipePlayer(LinkedList<Monster> equipePlayer) {
-		for (Monster m : equipePlayer) {
+	public void setEquipePlayer(LinkedList<MonsterEntity> equipePlayer) {
+		for (MonsterEntity m : equipePlayer) {
 			m.setEquipeJoueur();
 		}
 		this.equipePlayer = equipePlayer;
 	}
-	public void addEquipePlayer(Monster m) {
+	public void addEquipePlayer(MonsterEntity m) {
 		m.setEquipeJoueur();
 		this.equipePlayer.add(m);
 	}
@@ -51,9 +84,42 @@ public class Player {
 	public void setIdScene(int idScene) {
 		this.idScene = idScene;
 	}
-	/**	Generation d'une liste de 6 monstres pour faire les starters
-	 * @return ArrayList<Monster> ; Liste des 6 monstres servant de starters
-	 **/
+/*	public PlayerService getPlayerService() {
+		return this.player;
+	}
+	public void setPlayerService(PlayerService player) {
+		this.player = player;
+	}*/
+	public String getNom() {
+		return nom;
+	}
+	public void setNom(String nom) {
+		this.nom = nom;
+	}
+	public int getMaxRencontre() {
+		return maxRencontre;
+	}
+	public void setMaxRencontre(int maxRencontre) {
+		this.maxRencontre = maxRencontre;
+	}
+	public int getCptRencontre() {
+		return cptRencontre;
+	}
+	public void setCptRencontre(int cptRencontre) {
+		this.cptRencontre = cptRencontre;
+	}
+	public int getMaxArene() {
+		return maxArene;
+	}
+	public void setMaxArene(int maxArene) {
+		this.maxArene = maxArene;
+	}
+	public int getCptArene() {
+		return cptArene;
+	}
+	public void setCptArene(int cptArene) {
+		this.cptArene = cptArene;
+	}
 	public ArrayList<Monster> getStarters() {
 		if(starters.isEmpty()) {
 			starters = player.tableRencontre(6);
@@ -63,6 +129,9 @@ public class Player {
 	public PlayerService getPlayerService() {
 		return this.player;
 	}
+=======
+
+>>>>>>> Stashed changes
 	
 	//______________________________________________________________________________
 	//	Méthodes
@@ -70,7 +139,7 @@ public class Player {
 	/** Remet tout les monstres du joueur en sitation quiescente (PV, modifsStats...), par exemple après un combat 
 	 **/
 	public void soinEquipeJoueur() {
-		for (Monster m : equipePlayer) {
+		for (MonsterEntity m : equipePlayer) {
 			m.setPv(m.getPvMax());
 			m.setModifAtk(1);
 			m.setModifDef(1);
@@ -88,7 +157,7 @@ public class Player {
 		equipePlayer.forEach(m -> System.out.println(m.toStringGeneral()));
 		int im = saisieInt("Quel monstre voulez-vous changer de position ?");
 		int ip = saisieInt("À quelle position voulez-vous le mettre ?");
-		Monster m = equipePlayer.get(im-1);
+		MonsterEntity m = equipePlayer.get(im-1);
 		equipePlayer.set(im-1, equipePlayer.get(ip-1));
 		equipePlayer.set(ip-1, m);
 	}
@@ -100,7 +169,7 @@ public class Player {
 	 * @param position2 int ; Index du second monstre
 	 **/
 	public void changeMonster(int position1, int position2) {
-		Monster m = equipePlayer.get(position1-1);
+		MonsterEntity m = equipePlayer.get(position1-1);
 		equipePlayer.set(position1-1, equipePlayer.get(position2-1));
 		equipePlayer.set(position2-1, m);
 	}
@@ -112,16 +181,16 @@ public class Player {
 	 **/
 	public void changeMonsterActif(int i) {
 		while (equipePlayer.get(i-1).getPv()<=0 && (i<1 || i>6) ) {			
-			for (Monster m : equipePlayer) {
+			for (MonsterEntity m : equipePlayer) {
 				System.out.println(m.toStringGeneral());
 			}
 			i = saisieInt("Le monstre sélectionné est hors-combat. Veuillez en sélectionner un autre");
 		}
-		equipePlayer.getFirst().setModifAtk(1);
-		equipePlayer.getFirst().setModifDef(1);
-		equipePlayer.getFirst().setModifASp(1);
-		equipePlayer.getFirst().setModifDSp(1);
-		equipePlayer.getFirst().setModifVit(1);
+		this.getEquipePlayer().getFirst().setModifAtk(1);
+		getEquipePlayer().getFirst().setModifDef(1);
+		getEquipePlayer().getFirst().setModifASp(1);
+		getEquipePlayer().getFirst().setModifDSp(1);
+		getEquipePlayer().getFirst().setModifVit(1);
 		changeMonster(1, i);
 	}
 
@@ -132,7 +201,7 @@ public class Player {
 	 **/
 	public boolean checkEquipeJoueur() {
 		boolean reponse = false;
-		for (Monster m : equipePlayer) {
+		for (MonsterEntity m : equipePlayer) {
 			if (m.getPv()>0) {
 				reponse = true;
 			}
@@ -149,6 +218,7 @@ public class Player {
 	}
 	
 	
+<<<<<<< Updated upstream
 	/**	Crée une sélection aléatoire de six monstres puis le joueur doit en choisir un comme monstre de départ
 	 **/
 	public void selectionStarter () {
@@ -164,16 +234,20 @@ public class Player {
 		System.out.println("Ses moves sont : "+table2Chen.get(i-1).toStringDetailAttaque());
 		System.out.println("Ses statistiques sont : "+table2Chen.get(i-1).toStringDetailStat()+"\n");
 	}
+=======
+
+>>>>>>> Stashed changes
 	
 	
 	/**	Met dans l'equipe du joueur le starter sélectionné
 	 * @param index int ; index dans la liste de du starter choisis
 	 */
 	public void selectStarter(int index) {
-		addEquipePlayer(starters.get(index));
+		//addEquipePlayer(starters.get(index));
 	}
 
 	
+<<<<<<< Updated upstream
 	/**	FRONT UNIQUEMENT
 	 * @return
 	 **/
@@ -192,13 +266,15 @@ public class Player {
 		}
 		return m;
 	}
+=======
+>>>>>>> Stashed changes
 
 	
 	/**	Vérifie si le monstre est capturable et réalise le test de capture
 	 * Si la capture est réussie, ajoute le monstre à l'équipe du joueur
 	 * @param m Monster ; Monster adverse qui doit être capturé
 	 **/
-	public Action captureMonstre(Monster m) {	// Fusion des méthodes de capture Front et back pour homogénéisation
+	public Action captureMonstre(MonsterEntity m) {	// Fusion des méthodes de capture Front et back pour homogénéisation
 		Action a = new Action();
 		
 		if (m.getSituation().equals(Situation.valueOf("Sauvage"))) {
@@ -249,5 +325,13 @@ public class Player {
 		}
 		return a;
 	}
+	@Override
+	public String toString() {
+		return "Player [id=" + id + ", nom=" + nom + ", equipePlayer=" + equipePlayer + ", position="
+				+ Arrays.toString(position) + ", idScene=" + idScene + ", maxRencontre=" + maxRencontre
+				+ ", cptRencontre=" + cptRencontre + ", maxArene=" + maxArene + ", cptArene=" + cptArene + "]";
+	}
+	
+	
 
 }

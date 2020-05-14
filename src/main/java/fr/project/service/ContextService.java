@@ -17,7 +17,7 @@ import fr.project.dao.IDAOMonster;
 import fr.project.model.Attaque;
 import fr.project.model.Dresseur;
 import fr.project.model.Efficacite;
-import fr.project.model.Monster;
+import fr.project.model.MonsterEntity;
 
 @Service
 public class ContextService {
@@ -31,7 +31,7 @@ public class ContextService {
 	@Autowired
 	private PlayerService player;
 	
-	private ArrayList<Monster> monstresProposition = null;
+	private ArrayList<MonsterService> monstresProposition = null;
 	
 	private LinkedList<Dresseur> arene;
 
@@ -52,17 +52,17 @@ public class ContextService {
 
 	
 	
-	public List<Monster> getMonstresProposition(){
+	/*public List<MonsterEntity> getMonstresProposition(){
 		if(monstresProposition == null) {
-			monstresProposition = new ArrayList<Monster>();
+			monstresProposition = new ArrayList<MonsterService>();
 			monstresProposition.addAll(player.tableRencontre(10).stream()
-					.collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(Monster::getNom))),ArrayList::new)));
+					.collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(MonsterEntity::getNom))),ArrayList::new)));
 		}
 		return monstresProposition;
 	}
-	public void setMonstresProposition(ArrayList<Monster> monstresProposition) {
+	public void setMonstresProposition(ArrayList<MonsterService> monstresProposition) {
 		this.monstresProposition = monstresProposition;
-	}
+	}*/
 
 	public void rebuildPropositions() {
 		this.monstresProposition = null;
@@ -103,7 +103,7 @@ public class ContextService {
 		return getDaoAttaque().findById(id).get();
 	}
 
-	public Double getRatioEfficacite(Attaque a,Monster m){
+	public Double getRatioEfficacite(Attaque a,MonsterEntity m){
 		return getDaoAttaque().ratioEfficacite(a.getType().toString(),m.getType().toString()).orElse(new Efficacite(1.0)).getRatio();
 	}
 

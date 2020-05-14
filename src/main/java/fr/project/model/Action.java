@@ -1,15 +1,17 @@
 package fr.project.model;
 
+import fr.project.model.MonsterEntity;
+
 public class Action {
 	
-	Monster m;
+	MonsterEntity m;
 	String message;
 	
 	/** Constructeur avec paramettres
 	 * @param m : Monster
 	 * @param msg : String
 	 **/
-	public Action(Monster m, String msg) {
+	public Action(MonsterEntity m, String msg) {
 		this.m = m;
 		this.message = msg;
 	}
@@ -20,10 +22,10 @@ public class Action {
 	}
 
 	//Getters et Setters
-	public Monster getM() {
+	public MonsterEntity getM() {
 		return m;
 	}
-	public void setM(Monster m) {
+	public void setM(MonsterEntity m) {
 		this.m = m;
 	}
 	public String getMessage() {

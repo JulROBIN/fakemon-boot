@@ -9,5 +9,12 @@ class FakemonBootApplicationTests {
 	@Test
 	void contextLoads() {
 	}
+	
+	@Test
+	void testMonstre() {
+		MonsterEntity me = cs.tableRencontre(1).get(0);
+		System.out.println(me);
+		assertNull(me);
+	}
 
 }

@@ -1,12 +1,14 @@
 package fr.project.model;
 
+import fr.project.service.MonsterService;
+
 public class PVException extends Exception {
 
-	public PVException(Monster mException) {
+	public PVException(MonsterEntity mException) {
 		super(debutPhrase(mException)+" ne peux plus se battre !");
 	}
 
-	private static String debutPhrase(Monster mException) {
+	private static String debutPhrase(MonsterEntity mException) {
 		String texte = "";
 		if(mException.getSituation().equals(Situation.valueOf("Joueur"))) {
 			texte = "Votre "+mException.getNom();}

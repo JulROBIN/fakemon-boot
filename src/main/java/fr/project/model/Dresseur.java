@@ -7,10 +7,11 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import fr.project.service.MonsterService;
 import fr.project.service.PlayerService;
 
 public class Dresseur {
-	protected LinkedList<Monster> equipeDresseur = new LinkedList<Monster>(); 
+	protected LinkedList<MonsterEntity> equipeDresseur = new LinkedList<>(); 
 	String nom;
 	UUID uniqueId = UUID.randomUUID();
 
@@ -38,7 +39,7 @@ public class Dresseur {
 	public String getNom() {
 		return nom;
 	}
-	public LinkedList<Monster> getEquipeDresseur() {
+	public LinkedList<MonsterEntity> getEquipeDresseur() {
 		return equipeDresseur;
 	}
 	
@@ -62,9 +63,9 @@ public class Dresseur {
 	/** Renvoie le monstre au niveau le plus faible dans la liste des monstres du dresseur
 	 * @return Monster ; Le monstre qui a le niveau le plus faible de la liste du dresseur
 	 **/
-	private Monster lePlusFaible() {
-		Monster leNul = equipeDresseur.getFirst();
-		for (Monster m : equipeDresseur) {
+	private MonsterEntity lePlusFaible() {
+		MonsterEntity leNul = equipeDresseur.getFirst();
+		for (MonsterEntity m : equipeDresseur) {
 			if (leNul.getLevel()>m.getLevel()) {
 				leNul=m;
 			}
@@ -77,9 +78,9 @@ public class Dresseur {
 	 * @param pts int ; Nombre de points d'expérience disponibles pour la création de l'équipe
 	 * @return LinkedList<Monster> ; L'équipe du dresseur
 	 **/
-	private LinkedList<Monster> choixEquipeDresseur(int pts, PlayerService player) {
+	private LinkedList<MonsterEntity> choixEquipeDresseur(int pts, PlayerService player) {
 
-		Monster m = player.tableRencontre(1).get(0);
+		MonsterEntity m = player.tableRencontre(1).get(0);
 		m.setEquipeDresseur();
 		this.equipeDresseur.add(m);
 		Random r = new Random();
@@ -95,7 +96,7 @@ public class Dresseur {
 					//			System.out.println("Levelup monstre choisi:"+equipeDresseur.get(p).getNom()+". pts = "+pts);
 				}
 				else {
-					pts-=lePlusFaible().expNextLevel;
+					pts-=lePlusFaible().getExpNextLevel();
 					lePlusFaible().levelUp();
 					//			System.out.println("Levelup monstre faible:"+lePlusFaible().getNom()+". pts = "+pts);
 				}
@@ -122,7 +123,7 @@ public class Dresseur {
 	 **/
 	public boolean checkEquipeDresseur() {
 		boolean reponse = false;
-		for (Monster m : equipeDresseur) {
+		for (MonsterEntity m : equipeDresseur) {
 			if (m.getPv()>0) {
 				reponse = true;
 			}
@@ -143,10 +144,10 @@ public class Dresseur {
 	public void fakemonSuivant() {
 		boolean b = true; 
 		int i = 0; int index = 0; 
-		Monster firstM = null;
-		Monster mSwitch = this.equipeDresseur.getFirst();
+		MonsterEntity firstM = null;
+		MonsterEntity mSwitch = this.equipeDresseur.getFirst();
 		equipeDresseur.removeFirst();
-		for (Monster m : equipeDresseur) {
+		for (MonsterEntity m : equipeDresseur) {
 			i++;
 			if (m.getPv() > 0 && b) {
 				firstM = m;

@@ -237,7 +237,20 @@ var starterSelected = false; // je sais pas si c'est vraiment le top de la mettr
 				
 				list.append(itemContainer)
 				$("#playerInfos").append(list)
+				if(data.equipePlayer.length > 0){
+					but = $("<button>save</button>")
+					but.click({monstre : data.equipePlayer[0]}testSaveMonster)
+					$("#playerInfos").append(but)
+				}
 			}
+		})
+	}
+	
+	function testSaveMonster(e){
+		$.ajax({
+			type:'POST',
+			url : 'player/test',
+			data: e.data.monstre
 		})
 	}
 	

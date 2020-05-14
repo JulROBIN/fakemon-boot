@@ -53,10 +53,6 @@ public class Player {
 	@Column(name="cptArene")//	Nombre de dresseur de l'arène, sachant que le 1 et le dernier sont fixé. Doit être >= 2
 	private int cptArene = 0;
 
-	private PlayerService player;*/
-/*	@Autowired
-
->>>>>>> Stashed changes
 
 	//	Getters Setters et apparentés
 	public LinkedList<MonsterEntity> getEquipePlayer() {
@@ -84,12 +80,7 @@ public class Player {
 	public void setIdScene(int idScene) {
 		this.idScene = idScene;
 	}
-/*	public PlayerService getPlayerService() {
-		return this.player;
-	}
-	public void setPlayerService(PlayerService player) {
-		this.player = player;
-	}*/
+
 	public String getNom() {
 		return nom;
 	}
@@ -120,18 +111,7 @@ public class Player {
 	public void setCptArene(int cptArene) {
 		this.cptArene = cptArene;
 	}
-	public ArrayList<Monster> getStarters() {
-		if(starters.isEmpty()) {
-			starters = player.tableRencontre(6);
-		}
-		return starters;
-	}
-	public PlayerService getPlayerService() {
-		return this.player;
-	}
-=======
 
->>>>>>> Stashed changes
 	
 	//______________________________________________________________________________
 	//	Méthodes
@@ -217,58 +197,6 @@ public class Player {
 		return this.cptRencontre <= this.maxRencontre;
 	}
 	
-	
-<<<<<<< Updated upstream
-	/**	Crée une sélection aléatoire de six monstres puis le joueur doit en choisir un comme monstre de départ
-	 **/
-	public void selectionStarter () {
-
-		ArrayList<Monster> table2Chen = player.tableRencontre(6);
-		table2Chen.forEach(mi -> System.out.println(mi.toStringGeneral()));
-		int i=0;
-		while (i<1 || i>6) {
-			i = saisieInt("Quel Fakemon souhaitez-vous comme starter ? (1 à 6)");
-		}
-		addEquipePlayer(table2Chen.get(i-1));
-		System.out.println("Vous avez choisi "+table2Chen.get(i-1).getNom()+" !");
-		System.out.println("Ses moves sont : "+table2Chen.get(i-1).toStringDetailAttaque());
-		System.out.println("Ses statistiques sont : "+table2Chen.get(i-1).toStringDetailStat()+"\n");
-	}
-=======
-
->>>>>>> Stashed changes
-	
-	
-	/**	Met dans l'equipe du joueur le starter sélectionné
-	 * @param index int ; index dans la liste de du starter choisis
-	 */
-	public void selectStarter(int index) {
-		//addEquipePlayer(starters.get(index));
-	}
-
-	
-<<<<<<< Updated upstream
-	/**	FRONT UNIQUEMENT
-	 * @return
-	 **/
-	public Monster rencontreSauvage() {
-		this.cptRencontre++;
-		Monster  m = null;
-		if(this.cptRencontre <= this.maxRencontre) {
-			m = this.player.tableRencontre(1).get(0);
-			if (this.cptRencontre >= (this.maxRencontre*4)/5) {
-				m.levelUp();
-				m.levelUp();
-			}
-			else if (this.cptRencontre >= this.maxRencontre/2) {
-				m.levelUp();
-			}
-		}
-		return m;
-	}
-=======
->>>>>>> Stashed changes
-
 	
 	/**	Vérifie si le monstre est capturable et réalise le test de capture
 	 * Si la capture est réussie, ajoute le monstre à l'équipe du joueur

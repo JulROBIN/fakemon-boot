@@ -82,7 +82,12 @@ public class Player {
 	public void setIdScene(int idScene) {
 		this.idScene = idScene;
 	}
-
+/*	public PlayerService getPlayerService() {
+		return this.player;
+	}
+	public void setPlayerService(PlayerService player) {
+		this.player = player;
+	}*/
 	public String getNom() {
 		return nom;
 	}
@@ -113,11 +118,41 @@ public class Player {
 	public void setCptArene(int cptArene) {
 		this.cptArene = cptArene;
 	}
+	public PlayerService getPlayerService() {
+		return this.player;
+	}
+	public int getMaxRencontre() {
+		return maxRencontre;
+	}
+	public void setMaxRencontre(int maxRencontre) {
+		this.maxRencontre = maxRencontre;
+	}
+	public int getCptRencontre() {
+		return cptRencontre;
+	}
+	public void setCptRencontre(int cptRencontre) {
+		this.cptRencontre = cptRencontre;
+	}
+	public int getMaxArene() {
+		return maxArene;
+	}
+	public void setMaxArene(int maxArene) {
+		this.maxArene = maxArene;
+	}
+	public int getCptArene() {
+		return cptArene;
+	}
+	public void setCptArene(int cptArene) {
+		this.cptArene = cptArene;
+	}
 
+	
 	
 	//______________________________________________________________________________
 	//	Méthodes
 
+	
+	
 	/** Remet tout les monstres du joueur en sitation quiescente (PV, modifsStats...), par exemple après un combat 
 	 **/
 	public void soinEquipeJoueur() {
@@ -200,6 +235,21 @@ public class Player {
 	}
 	
 	
+	public void selectionStarter (ArrayList<Monster> table2Chen) {
+
+	//	ArrayList<Monster> table2Chen = player.tableRencontre(6);
+		table2Chen.forEach(mi -> System.out.println(mi.toStringGeneral()));
+		int i=0;
+		while (i<1 || i>6) {
+			i = saisieInt("Quel Fakemon souhaitez-vous comme starter ? (1 à 6)");
+		}
+		addEquipePlayer(table2Chen.get(i-1));
+		System.out.println("Vous avez choisi "+table2Chen.get(i-1).getNom()+" !");
+		System.out.println("Ses moves sont : "+table2Chen.get(i-1).toStringDetailAttaque());
+		System.out.println("Ses statistiques sont : "+table2Chen.get(i-1).toStringDetailStat()+"\n");
+	}
+	 **/
+	/**	Crée une sélection aléatoire de six monstres puis le joueur doit en choisir un comme monstre de départ
 	/**	Vérifie si le monstre est capturable et réalise le test de capture
 	 * Si la capture est réussie, ajoute le monstre à l'équipe du joueur
 	 * @param m Monster ; Monster adverse qui doit être capturé
@@ -264,4 +314,10 @@ public class Player {
 	
 	
 
+	
+
+	
+	
+	
+	
 }

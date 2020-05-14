@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.project.model.MonsterEntity;
+import fr.project.model.Player;
 
 import fr.project.model.Player;
 
@@ -67,6 +68,17 @@ public class PlayerService {
 			tableRencontre.add(m);
 		}
 		return tableRencontre;
+	}
+
+	
+	/**	Generation d'une liste de 6 monstres pour faire les starters
+	 * @return ArrayList<Monster> ; Liste des 6 monstres servant de starters
+	 **/
+	public ArrayList<Monster> getStarters(Player sacha) {
+		if(sacha.getStarters().isEmpty()) {
+			sacha.setStarters(tableRencontre(6));
+		}
+		return sacha.getStarters();
 	}
 
 

@@ -83,11 +83,8 @@ public class Player {
 		this.idScene = idScene;
 	}
 /*	public PlayerService getPlayerService() {
-		return this.player;
-	}
-	public void setPlayerService(PlayerService player) {
-		this.player = player;
 	}*/
+	}
 	public String getNom() {
 		return nom;
 	}
@@ -117,9 +114,6 @@ public class Player {
 	}
 	public void setCptArene(int cptArene) {
 		this.cptArene = cptArene;
-	}
-	public PlayerService getPlayerService() {
-		return this.player;
 	}
 	public int getMaxRencontre() {
 		return maxRencontre;
@@ -235,6 +229,8 @@ public class Player {
 	}
 	
 	
+	/**	Crée une sélection aléatoire de six monstres puis le joueur doit en choisir un comme monstre de départ
+	 **/
 	public void selectionStarter (ArrayList<Monster> table2Chen) {
 
 	//	ArrayList<Monster> table2Chen = player.tableRencontre(6);
@@ -249,6 +245,23 @@ public class Player {
 		System.out.println("Ses statistiques sont : "+table2Chen.get(i-1).toStringDetailStat()+"\n");
 	}
 	 **/
+	public Monster rencontreSauvage(Monster m) {
+		this.cptRencontre++;
+//		Monster  m = null;
+		if(this.cptRencontre <= this.maxRencontre) {
+//			m = this.player.tableRencontre(1).get(0);
+			if (this.cptRencontre >= (this.maxRencontre*4)/5) {
+				m.levelUp();
+				m.levelUp();
+			}
+			else if (this.cptRencontre >= this.maxRencontre/2) {
+				m.levelUp();
+			}
+		}
+		return m;
+	}
+
+	
 	/**	Crée une sélection aléatoire de six monstres puis le joueur doit en choisir un comme monstre de départ
 	/**	Vérifie si le monstre est capturable et réalise le test de capture
 	 * Si la capture est réussie, ajoute le monstre à l'équipe du joueur

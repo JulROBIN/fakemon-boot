@@ -9,7 +9,7 @@ public interface IDAOMonster extends JpaRepository<MonsterService, Integer> {
 	
 	public MonsterService findByNom(String nom);
 	
-	@Query("SELECT COUNT(m) FROM Monster m")
+	@Query("SELECT COUNT(m) FROM MonsterService m")
 	public Integer countNombreMonstre();
 
 }

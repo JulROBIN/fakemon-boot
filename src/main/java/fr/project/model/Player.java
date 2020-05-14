@@ -56,7 +56,9 @@ public class Player {
 
 	//	Getters Setters et apparentés
 	public LinkedList<MonsterEntity> getEquipePlayer() {
-		return (LinkedList)this.equipePlayer;
+		LinkedList<MonsterEntity> equipe = new LinkedList<MonsterEntity>();
+		equipe.addAll(equipePlayer);
+		return equipe;
 	}
 	public void setEquipePlayer(LinkedList<MonsterEntity> equipePlayer) {
 		for (MonsterEntity m : equipePlayer) {

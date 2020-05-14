@@ -127,10 +127,19 @@ $(document).ready(function(){
 			$("#menuSelectAtk").find("button").each(function(){
 				$(this).prop("disabled",true)
 			})
-			heal()
-			toasty()
-			setTimeout(moveToIndex,4000)
+			if(data.levelup()){
+				// trigger fenetre selection
+			}else{
+				heal()
+				toasty()
+				setTimeout(moveToIndex,4000)
+			}
+
 		}
+	}
+	
+	function checkLvlUp(){
+		
 	}
 	
 	function switchMonster(e){

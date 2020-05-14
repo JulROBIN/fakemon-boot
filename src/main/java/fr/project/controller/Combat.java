@@ -20,18 +20,25 @@ import fr.project.dao.IDAOMonster;
 import fr.project.dao.IDAOPlayer;
 import fr.project.model.Action;
 import fr.project.model.Dresseur;
+import fr.project.model.MonsterEntity;
 import fr.project.model.PVException;
 import fr.project.model.Player;
 import fr.project.service.ContextService;
+import fr.project.service.MonsterService;
+import fr.project.service.PlayerService;
 
 @Controller
 @RequestMapping("/combat")
 public class Combat {
 
 	@Autowired
-	Player player;
+	PlayerService player;
+	
 	@Autowired
 	ContextService ctx;
+	
+	@Autowired
+	MonsterService ms;
 	
 	@Autowired
 	IDAOPlayer daoP;
@@ -45,7 +52,7 @@ public class Combat {
 	public String launchCombat(@RequestParam Map<String,String> data, HttpServletRequest request) {
 		p = daoP.getOne((int)request.getSession().getAttribute("player"));
 		System.out.println("Test "+data.get("mstrId"));
-		MonsterService playerMonster =  p.getEquipePlayer().stream().filter(m -> m.getUniqueId().toString().equals(data.get("mstrId"))).findAny().get();
+		MonsterEntity playerMonster =  p.getEquipePlayer().stream().filter(m -> m.getId() == Integer.valueOf(data.get("mstrId"))).findAny().get();
 		request.getSession().setAttribute("attaquant", playerMonster);
 		try {
 			if(request.getSession().getAttribute("localisation").equals("wilds")) {
@@ -60,10 +67,10 @@ public class Combat {
 	
 	@PostMapping("switch")
 	@ResponseBody
-	public boolean switchMonster(@RequestParam String entity, @RequestParam String id, HttpServletRequest request) {
+	public boolean switchMonster(@RequestParam String entity, @RequestParam int id, HttpServletRequest request) {
 		p = daoP.getOne((int)request.getSession().getAttribute("player"));
 		if(entity.contentEquals("player")) {
-			MonsterService m = p.getEquipePlayer().parallelStream().filter(mon -> mon.getUniqueId().toString().equals(id)).findFirst().get();
+			MonsterEntity m = p.getEquipePlayer().parallelStream().filter(mon -> mon.getId() == id).findFirst().get();
 			System.out.println("LE MONSTRE : "+m);
 			request.getSession().setAttribute("attaquant", m);
 		}
@@ -78,7 +85,7 @@ public class Combat {
 	@ResponseBody
 	public String capture(HttpServletRequest request) {
 		p = daoP.getOne((int)request.getSession().getAttribute("player"));
-		MonsterService m = (MonsterService) request.getSession().getAttribute("adversaire");
+		MonsterEntity m = (MonsterEntity) request.getSession().getAttribute("adversaire");
 		StringBuffer sb = new StringBuffer();
 		Action a = p.captureMonstre(m);
 		sb.append("{");
@@ -103,8 +110,8 @@ public class Combat {
 		om.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
 
 		try {
-			sb.append("{ \"attaquant\" : ").append(om.writeValueAsString((MonsterService)request.getSession().getAttribute("attaquant"))).append(",");
-			sb.append(" \"adversaire\" : ").append(om.writeValueAsString((MonsterService)request.getSession().getAttribute("adversaire"))).append("}");
+			sb.append("{ \"attaquant\" : ").append(om.writeValueAsString((MonsterEntity)request.getSession().getAttribute("attaquant"))).append(",");
+			sb.append(" \"adversaire\" : ").append(om.writeValueAsString((MonsterEntity)request.getSession().getAttribute("adversaire"))).append("}");
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}	
@@ -116,22 +123,23 @@ public class Combat {
 	public String combat(@RequestParam Map<String,String> data, HttpServletRequest request) {
 		ObjectMapper om = new ObjectMapper();
 		
+		Player p = daoP.getOne((int)request.getSession().getAttribute("player"));
 		
 		int atkId = Integer.valueOf(data.get("atkId"));
 		System.out.println("Atttaque : "+atkId);
 		StringBuffer sb = new StringBuffer();
 		sb.append("{");
-		MonsterService m1;
-		MonsterService m2;
+		MonsterEntity m1;
+		MonsterEntity m2;
 		
 		try {
-			MonsterService monster = om.readValue(data.get("attaquant"), MonsterService.class);
-			m1 = p.getEquipePlayer().stream().filter(m -> m.getUniqueId().toString().equals(monster.getUniqueId().toString())).findAny().get();
-			m2 = om.readValue(data.get("adversaire"), MonsterService.class);
+			MonsterEntity monster = om.readValue(data.get("attaquant"), MonsterEntity.class);
+			m1 = p.getEquipePlayer().stream().filter(m -> m.getId() == monster.getId()).findAny().get();
+			m2 = om.readValue(data.get("adversaire"), MonsterEntity.class);
 
 			try {
 				
-				Action act = m1.combat(m2,atkId,ctx);
+				Action act = ms.combat(m2, m1, atkId);
 				m2 = act.getM();
 				sb.append("\"playerTurn\":false");
 				sb.append(",\"endFight\":"+false+",\"msg\": \""+act.getMessage()+"\"");
@@ -142,29 +150,22 @@ public class Combat {
 				if(localisation.contentEquals("arena")) {
 					//player turn false,switch en face
 					Dresseur d =  ctx.getArene().stream().filter(dres -> dres.getUniqueId().toString().equals(request.getSession().getAttribute("dresseur"))).findFirst().get();
-					String uidMonstre = m2.getUniqueId().toString();
+					int uidMonstre = m2.getId();
 					System.out.println(uidMonstre);
 					System.out.println(d);
-					if(d.getEquipeDresseur().size()>0) {
-						d.getEquipeDresseur().forEach(System.out::println);
-						MonsterService mTemp = d.getEquipeDresseur().stream().filter(mDresseur -> mDresseur.getUniqueId().toString().equals(uidMonstre)).findFirst().get();
-						d.getEquipeDresseur().remove(mTemp);
-						if(d.checkEquipeDresseur()) {
-							m2 = d.getEquipeDresseur().peek();
-							sb.append("\"playerTurn\":"+true);
-							sb.append(",\"endFight\":"+false+",\"msg\": \""+d.getNom()+" change de monstre pour "+m2.getNom()+"\"");
-						}else {
-							m1.getExpGain();
-							p.soinEquipeJoueur();
-							sb.append("\"playerTurn\":false");
-							sb.append(",\"endFight\":"+true+",\"msg\": \"Fin du combat !!\\n Tu as battu "+d.getNom()+"\"");
-						}
+					if(d.checkEquipeDresseur()) {
+						m1.expGain(m2);
+						d.fakemonSuivant();
+						m2 = d.getEquipeDresseur().peek();
+						sb.append("\"playerTurn\":"+true);
+						sb.append(",\"endFight\":"+false+",\"msg\": \""+d.getNom()+" change de monstre pour "+m2.getNom()+"\"");
 					}else {
 						m1.getExpGain();
 						p.soinEquipeJoueur();
 						sb.append("\"playerTurn\":false");
-						sb.append(",\"endFight\":"+true+",\"msg\": \"Fin du combat !!\\n Tu as battu "+d.getNom()+"\"");						
+						sb.append(",\"endFight\":"+true+",\"msg\": \"Fin du combat !!\\n Tu as battu "+d.getNom()+"\"");
 					}
+					
 				}else {
 					if(m1.getPv() > 0)
 						m1.getExpGain();
@@ -192,25 +193,22 @@ public class Combat {
 	@PostMapping("/attaquebot")
 	@ResponseBody
 	public String combatBot(@RequestParam Map<String,String> data, HttpServletRequest request) {
-		//Gson gson = new Gson();
-		//Monster m2 = gson.fromJson(data.get("attaquant"), Monster.class);
-		//Monster m1 = gson.fromJson(data.get("adversaire"), Monster.class);
 		
 		
 		StringBuffer sb = new StringBuffer();
 		sb.append("{");
 		
-		MonsterService m1;
-		MonsterService m2;
+		MonsterEntity m1;
+		MonsterEntity m2;
 		ObjectMapper om = new ObjectMapper();
 		try {
-			MonsterService monster = om.readValue(data.get("attaquant"), MonsterService.class);
-			m2 = p.getEquipePlayer().stream().filter(m -> m.getUniqueId().toString().equals(monster.getUniqueId().toString())).findAny().get();
-			m1 = om.readValue(data.get("adversaire"), MonsterService.class);	
+			MonsterEntity monster = om.readValue(data.get("attaquant"), MonsterEntity.class);
+			m2 = p.getEquipePlayer().stream().filter(m -> m.getId() == monster.getId()).findAny().get();
+			m1 = om.readValue(data.get("adversaire"), MonsterEntity.class);	
 			
 			try {
-				int atkId = m1.choixAttaqueBOT(m2,ctx).getId();
-				Action act = m1.combat(m2,atkId,ctx);
+				int atkId = ms.choixAttaqueBOT(m2).getId();
+				Action act = ms.combat(m2,m1,atkId);
 				m2 = act.getM();
 				sb.append("\"playerTurn\":true");
 				sb.append(",\"endFight\":"+false+",\"msg\": \""+act.getMessage()+"\"");

@@ -239,7 +239,7 @@ var starterSelected = false; // je sais pas si c'est vraiment le top de la mettr
 				$("#playerInfos").append(list)
 				if(data.equipePlayer.length > 0){
 					but = $("<button>save</button>")
-					but.click({monstre : data.equipePlayer[0]}testSaveMonster)
+					but.click({monstre : data.equipePlayer[0]},testSaveMonster)
 					$("#playerInfos").append(but)
 				}
 			}

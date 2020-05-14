@@ -17,6 +17,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -30,30 +31,31 @@ import fr.project.model.Type;
 //	Déclaration Attribut
 @Entity
 @Table(name = "fakemon_stats")
+@Service
 public class MonsterService {
 
 	//Pour le calcul des stats : base commune de l'espèce
-	@JsonIgnore
+
 	@Column (name = "pv", nullable = false)
 	protected double basePV;
 
-	@JsonIgnore
+
 	@Column (name = "attaque", nullable = false)
 	protected double baseAtk;	
 
-	@JsonIgnore
+
 	@Column (name = "defense", nullable = false)
 	protected double baseDef;
 
-	@JsonIgnore
+
 	@Column (name = "atk_speciale", nullable = false)
 	protected double baseASp;
 
-	@JsonIgnore
+
 	@Column (name = "def_speciale", nullable = false)
 	protected double baseDSp;
 
-	@JsonIgnore
+
 	@Column (name = "vitesse", nullable = false)
 	protected double baseVit;
 

@@ -26,11 +26,13 @@ import fr.project.service.PlayerService;
 @RequestMapping("/mechanics")
 public class GameMechanics {
 	
-	@Autowired
-	Player player;
+
 	@Autowired
 	ContextService ctx;
-	Player p;
+	
+	@Autowired
+	PlayerService ps;
+	
 	@Autowired
 	IDAOPlayer daoP;
 	
@@ -45,7 +47,7 @@ public class GameMechanics {
 	@GetMapping("/scene/setup")
 	@ResponseBody
 	public String getSceneSetup(HttpServletRequest request) {
-		p = daoP.getOne((int)request.getSession().getAttribute("player"));
+		Player p = daoP.getOne((int)request.getSession().getAttribute("player"));
 		String rencontre = "";
 		if(p.peutRencontrer()) {
 			Random r = new Random();
@@ -82,7 +84,10 @@ public class GameMechanics {
 	
 	@GetMapping("scene/{id}")
 	@ResponseBody
-	public String getSceneById(@PathVariable int id) {
+	public String getSceneById(@PathVariable int id, HttpServletRequest request) {
+		
+		Player p = daoP.getOne((int)request.getSession().getAttribute("player"));
+		
 		String rencontre = "";
 		if(p.peutRencontrer()) {
 			Random r = new Random();
@@ -121,7 +126,7 @@ public class GameMechanics {
 		LinkedList<Dresseur> arene = new LinkedList<Dresseur>();
 		System.out.println("genere une arene");
 		for(int i =0; i<1;i++) {
-			arene.add(new Dresseur(i, player));
+			arene.add(new Dresseur(i, ps));
 		}
 		
 		request.getSession().setAttribute("arene", arene);

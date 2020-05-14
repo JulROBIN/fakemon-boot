@@ -7,12 +7,12 @@ import java.util.Random;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -20,7 +20,7 @@ import fr.project.model.Dresseur;
 import fr.project.service.ContextService;
 import fr.project.service.PlayerService;
 
-@Controller
+@RestController
 @RequestMapping("/mechanics")
 public class GameMechanics {
 	
@@ -31,13 +31,11 @@ public class GameMechanics {
 	
 	
 	@PostMapping("/session")
-	@ResponseBody
 	public void resetSession(HttpServletRequest request) {
 		request.getSession().invalidate();
 	}
 	
 	@GetMapping("/scene/setup")
-	@ResponseBody
 	public String getSceneSetup(HttpServletRequest request) {
 
 		String rencontre = "";
@@ -75,7 +73,6 @@ public class GameMechanics {
 	}
 	
 	@GetMapping("scene/{id}")
-	@ResponseBody
 	public String getSceneById(@PathVariable int id) {
 		String rencontre = "";
 		if(player.peutRencontrer()) {
@@ -105,11 +102,6 @@ public class GameMechanics {
 		return scenes.get(id-1);
 	}
 	
-	@GetMapping("/select")
-	public String getSelectMenu() {
-		System.out.println("Go select");
-		return "selectMonster";
-	}
 	
 	public void generateArena(HttpServletRequest request) {
 		LinkedList<Dresseur> arene = new LinkedList<Dresseur>();

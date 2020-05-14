@@ -101,7 +101,7 @@ var starterSelected = false; // je sais pas si c'est vraiment le top de la mettr
 		$.ajax({
 			
 			type:"GET",
-			url:'mechanics/select',
+			url:'select',
 			success: function(resp){
 				$("#scene").html(resp)
 			}
@@ -244,7 +244,7 @@ var starterSelected = false; // je sais pas si c'est vraiment le top de la mettr
 	function sceneSetupId(id){
 		$.ajax({
 			type:"GET",
-			url:'/fakemon-front/mechanics/scene/'+id,
+			url:'mechanics/scene/'+id,
 			success:function(resp){
 				data = JSON.parse(resp)
 				console.log(data)
@@ -279,7 +279,7 @@ var starterSelected = false; // je sais pas si c'est vraiment le top de la mettr
 			console.log("scene vide")
 			$.ajax({
 				type:"GET",
-				url:'/fakemon-front/mechanics/scene/setup',
+				url:'mechanics/scene/setup',
 				success:function(resp){
 					console.log(resp)
 					data = JSON.parse(resp)

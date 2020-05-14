@@ -21,22 +21,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		return new BCryptPasswordEncoder();
 	}
 	
+	
+	/**
+	 * ATTENTION : Penser a bien verifier que des pages du'un vieu projet traine pas ici
+	 * @param http
+	 * @throws Exception
+	 */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
 		.antMatchers("/assets/**").permitAll()
-	//	.antMatchers("/medecin/**").hasAnyRole("MEDECIN", "ADMIN")
-	//	.antMatchers("/secretaire/**").hasAnyRole("SECRETAIRE", "ADMIN")
-	//	.antMatchers("/visite/**").hasAnyRole("SECRETAIRE", "MEDECIN", "ADMIN")
-	//	.antMatchers("/patient/**").hasAnyRole("SECRETAIRE", "MEDECIN", "ADMIN")
-	//	.antMatchers("/**").hasRole("ADMIN")
 		.and()
+		.csrf().disable()
 		.formLogin()
 			.loginPage("/connect") //lien vers getmapping --> HomeController
-			.loginProcessingUrl("/connect") //lien du formunaire en post !!!
-			.defaultSuccessUrl("/visite", true)
-			.failureUrl("/connect?error=true")
+			.loginProcessingUrl("/connect") //lien du formunaire en post !!
 			.permitAll();
+		
 	}
 
 	

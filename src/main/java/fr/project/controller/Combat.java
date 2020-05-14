@@ -5,12 +5,11 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.MapperFeature;
@@ -24,7 +23,7 @@ import fr.project.model.PVException;
 import fr.project.service.ContextService;
 import fr.project.service.PlayerService;
 
-@Controller
+@RestController
 @RequestMapping("/combat")
 public class Combat {
 
@@ -36,26 +35,9 @@ public class Combat {
 	
 	@Autowired
 	IDAOMonster daoM;
-	
-	@PostMapping("/")
-	public String launchCombat(@RequestParam Map<String,String> data, HttpServletRequest request) {
 
-		System.out.println("Test "+data.get("mstrId"));
-		Monster playerMonster =  player.getEquipePlayer().stream().filter(m -> m.getUniqueId().toString().equals(data.get("mstrId"))).findAny().get();
-		request.getSession().setAttribute("attaquant", playerMonster);
-		try {
-			if(request.getSession().getAttribute("localisation").equals("wilds")) {
-				request.getSession().setAttribute("adversaire", player.rencontreSauvage());
-			}
-		}catch(Exception e) {
-			System.out.println("pas d'attribut \"location\"");
-		}
-		
-		return "combat";
-	}
 	
 	@PostMapping("switch")
-	@ResponseBody
 	public boolean switchMonster(@RequestParam String entity, @RequestParam String id, HttpServletRequest request) {
 		
 		if(entity.contentEquals("player")) {
@@ -71,7 +53,6 @@ public class Combat {
 	
 	
 	@GetMapping("/capture")
-	@ResponseBody
 	public String capture(HttpServletRequest request) {
 		Monster m = (Monster) request.getSession().getAttribute("adversaire");
 		StringBuffer sb = new StringBuffer();
@@ -89,7 +70,6 @@ public class Combat {
 	}
 	
 	@GetMapping("/setup")
-	@ResponseBody
 	public String setup(HttpServletRequest request) {
 
 		StringBuffer sb = new StringBuffer();
@@ -108,7 +88,6 @@ public class Combat {
 	}
 	
 	@PostMapping("/attaque")
-	@ResponseBody
 	public String combat(@RequestParam Map<String,String> data, HttpServletRequest request) {
 		ObjectMapper om = new ObjectMapper();
 		
@@ -188,7 +167,6 @@ public class Combat {
 	}
 	
 	@PostMapping("/attaquebot")
-	@ResponseBody
 	public String combatBot(@RequestParam Map<String,String> data, HttpServletRequest request) {
 		//Gson gson = new Gson();
 		//Monster m2 = gson.fromJson(data.get("attaquant"), Monster.class);

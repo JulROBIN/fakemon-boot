@@ -5,7 +5,7 @@ $(document).ready(function(){
 		idx = event.data.param1
 		$.ajax({
 			type:"POST",
-			url:'combat/',
+			url:'combat',
 			data:{'mstrId' : idx,'playerPlays':true},
 			success: function(resp){
 				$("#scene").html(resp)

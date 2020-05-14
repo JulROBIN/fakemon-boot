@@ -6,20 +6,19 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.project.model.Monster;
 import fr.project.service.PlayerService;
-@Controller
+@RestController
 @RequestMapping("/player")
 public class PlayerMechanics {
 	@Autowired
@@ -32,7 +31,6 @@ public class PlayerMechanics {
 	 * @return
 	 */
 	@PostMapping("/starter/{id}")
-	@ResponseBody
 	public String selectStarter(@PathVariable String id) {
 		Monster m = player.getStarters().stream().filter(monster -> monster.getUniqueId().toString().equals(id)).findFirst().get();
 		player.addEquipePlayer(m);
@@ -40,7 +38,6 @@ public class PlayerMechanics {
 	}
 	
 	@PostMapping("/starter/pop")
-	@ResponseBody
 	public String popStarter() {
 		Optional<Monster> response  = player.getStarters().stream().filter(monster -> !seenMonsters.contains(monster.getUniqueId().toString())).findAny();
 		String returnBody = "{}";
@@ -59,7 +56,6 @@ public class PlayerMechanics {
 	}
 	
 	@PostMapping("/posupdate")
-	@ResponseBody
 	public boolean playerInfos(@RequestParam int x, @RequestParam int y, @RequestParam int scene,@RequestParam String localisation, HttpServletRequest request) {
 		//System.out.println("Updating player informations : "+localisation);
 		player.setIdScene(scene);
@@ -69,13 +65,11 @@ public class PlayerMechanics {
 	}
 	
 	@GetMapping("/infos")
-	@ResponseBody
 	public String getPlayerInfos() {
 		return "{ \"playerPos\" : ["+player.getPosition()[0]+","+player.getPosition()[1]+"]}";
 	}
 	
 	@GetMapping("/infosTest")
-	@ResponseBody
 	public String getPlayerInfosTest() {
 		ObjectMapper om = new ObjectMapper();
 		String playerInfos ="";
@@ -90,13 +84,11 @@ public class PlayerMechanics {
 	}
 	
 	@GetMapping("/heal")
-	@ResponseBody
 	public void healSquad() {
 		player.soinEquipeJoueur();
 	}
 	
 	@GetMapping("/squad")
-	@ResponseBody
 	public String getSquad() {
 		System.out.println("Accessing squad");
 		int size = player.getEquipePlayer().size();

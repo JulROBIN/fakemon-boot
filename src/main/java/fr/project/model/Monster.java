@@ -196,6 +196,7 @@ public class Monster {
 	}
 	public void setLevel(int level) {
 		this.level = level;
+		expNextLevel = ( (int) (7*this.level + Math.pow(this.level,2) )/2 )+1;
 	}
 	public int getLevel() {
 		return level;
@@ -398,7 +399,7 @@ public class Monster {
 	@JsonIgnore
 	public void levelUp() {
 		level++;
-		expNextLevel=( (int) (7*this.getLevel() + Math.pow(this.getLevel(),2) )/2 )+1;
+		expNextLevel = ( (int) (7*this.getLevel() + Math.pow(this.getLevel(),2) )/2 )+1;
 		calcStat();
 
 		//--------------

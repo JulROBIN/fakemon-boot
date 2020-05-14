@@ -28,6 +28,8 @@ public class GameMechanics {
 	
 
 	@Autowired
+	PlayerService player;
+	@Autowired
 	ContextService ctx;
 	
 	@Autowired

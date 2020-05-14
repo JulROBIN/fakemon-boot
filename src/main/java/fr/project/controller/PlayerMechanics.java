@@ -19,12 +19,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.project.model.Monster;
 import fr.project.model.Player;
+import fr.project.service.PlayerService;
 
 @Controller
 @RequestMapping("/player")
 public class PlayerMechanics {
 	@Autowired
-	Player player;
+	PlayerService player;
 	// Attribut temporaire le temps de trouver mieux
 	ArrayList<String> seenMonsters = new ArrayList<String>();
 	/**

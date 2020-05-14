@@ -23,13 +23,14 @@ import fr.project.model.Monster;
 import fr.project.model.PVException;
 import fr.project.model.Player;
 import fr.project.service.ContextService;
+import fr.project.service.PlayerService;
 
 @Controller
 @RequestMapping("/combat")
 public class Combat {
 
 	@Autowired
-	Player player;
+	PlayerService player;
 	@Autowired
 	ContextService ctx;
 	

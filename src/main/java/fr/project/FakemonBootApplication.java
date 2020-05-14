@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Scanner;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,7 +20,7 @@ import fr.project.service.PlayerService;
 
 @SpringBootApplication
 public class FakemonBootApplication {
-	
+
 	public static int saisieInt(String msg) {
 		Scanner sc = new Scanner(System.in);
 		System.out.println(msg);
@@ -31,7 +33,7 @@ public class FakemonBootApplication {
 		String i = sc.next();
 		return i;
 	}	
-	
+
 	//________________________________________________________________________
 	@Autowired
 	PlayerService player;
@@ -39,13 +41,16 @@ public class FakemonBootApplication {
 	@Autowired
 	ContextService ctxtsvc;
 	
+	private static Logger logger = LoggerFactory.getLogger(FakemonBootApplication.class);
+
 	/** Fonction qui va lancer le combat : calcul quel monstre a l'initiative (fonction appelee) puis passe a la phase de combat (fonction appelee) dans le bon ordre.
 	 * La sortie d'une PVexception dans la fonction combat apppelee signifie que l'un des deux monstre au combat est KO
 	 * @param m1 : Monster ; le monstre du joueur, cad le premier de sa liste au debut du combat puis celui actif lors des tours suivants (si KO ou switch)
 	 * @param m2 : Monster ; Le monstre sauvage ou du dresseur adverse
 	 **/
-	public void combat(Monster m1, Monster m2){
+	public void combat(Player sacha, Monster m2){
 
+		Monster m1 = sacha.getEquipePlayer().getFirst();
 		try {
 			while (m1.getPv()>0 && m2.getPv()>0) {
 				if (m1.initiative(m2).equals(m1)) {
@@ -63,9 +68,9 @@ public class FakemonBootApplication {
 			}
 		}
 		catch (PVException e) {System.err.println(e);
-		if (player.getEquipePlayer().getFirst().getPv()<=0 && player.checkEquipeJoueur()) {
-			player.changeMonsterActif(1);
-			combat (player.getEquipePlayer().getFirst(), m2);
+		if (sacha.getEquipePlayer().getFirst().getPv()<=0 && sacha.checkEquipeJoueur()) {
+			sacha.changeMonsterActif(1);
+			combat(sacha, m2);
 		}
 		}
 	}
@@ -76,7 +81,7 @@ public class FakemonBootApplication {
 	 * Il y a de l'affichage dans la console
 	 * @param nbSauvage : int ; nombre de crÃ©atures sauvages rencontrÃ©es d'affillÃ©es
 	 **/
-	public void rencontreSauvage(int nbSauvage) {
+	public void rencontreSauvage(int nbSauvage, Player sacha) {
 
 		System.out.println("Vous allez rencontrer "+nbSauvage+" Fakemon sauvages.");
 		Monster m = null;	
@@ -97,13 +102,13 @@ public class FakemonBootApplication {
 			}
 
 			System.out.println("Vous allez combatre un "+m.getNom()+" sauvage de niveau "+m.getLevel()+".");
-			combat(player.getEquipePlayer().getFirst(),m);
-			player.soinEquipeJoueur();
+			combat(sacha,m);
+			sacha.soinEquipeJoueur();
 		}
 	}
 
-	public void combatDresseur(PlayerService player, Dresseur dresseur){
-		Monster mPlayer = player.getEquipePlayer().getFirst();
+	public void combatDresseur(Player sacha, Dresseur dresseur){
+		Monster mPlayer = sacha.getEquipePlayer().getFirst();
 		Monster mDresseur = dresseur.getEquipeDresseur().getFirst();
 		String scString = "chose"; int scInt = 0;
 		try {
@@ -112,13 +117,13 @@ public class FakemonBootApplication {
 					scString = saisieString("Voulez-vous changer de monstre actif ?");
 				}
 				if(scString.equalsIgnoreCase("y")) {
-					while (scInt < 1 || scInt > player.getEquipePlayer().size()) {
-						for (Monster m : player.getEquipePlayer()) {System.out.println(m.toStringGeneralPV());}
-					scInt = saisieInt("Quel monstre voulez-vous en monstre actif?");
+					while (scInt < 1 || scInt > sacha.getEquipePlayer().size()) {
+						for (Monster m : sacha.getEquipePlayer()) {System.out.println(m.toStringGeneralPV());}
+						scInt = saisieInt("Quel monstre voulez-vous en monstre actif?");
 					}
-					player.changeMonsterActif(scInt);
+					sacha.changeMonsterActif(scInt);
 				}
-			else if (mPlayer.initiative(mDresseur).equals(mPlayer)) {
+				else if (mPlayer.initiative(mDresseur).equals(mPlayer)) {
 					System.out.println("Votre "+mPlayer.getNom()+" attaque le "+mDresseur.getNom()+" adverse en premier");
 					mPlayer.selectionAttaqueCombat(mDresseur, ctxtsvc);
 					System.out.println("Le "+mDresseur.getNom()+" adverse attaque votre "+mPlayer.getNom());
@@ -133,29 +138,34 @@ public class FakemonBootApplication {
 			}
 		}
 		catch (PVException e) {System.err.println(e);
-			if (mPlayer.getPv()<=0 && player.checkEquipeJoueur()) {
-				System.out.println("Vous devez changer de Fakemon. Qui voulez-vous envoyer ?");
-				player.changeMonsterActif(1);
-				combatDresseur(player, dresseur);
-			}
-			else if (mDresseur.getPv()<=0 && dresseur.checkEquipeDresseur()) {
-				System.out.println("Le dresseur adverse change de fakemon.");
-				dresseur.fakemonSuivant();
-				combatDresseur(player, dresseur);
-			}
+		if (mPlayer.getPv()<=0 && sacha.checkEquipeJoueur()) {
+			System.out.println("Vous devez changer de Fakemon. Qui voulez-vous envoyer ?");
+			sacha.changeMonsterActif(1);
+			combatDresseur(sacha, dresseur);
+		}
+		else if (mDresseur.getPv()<=0 && dresseur.checkEquipeDresseur()) {
+			System.out.println("Le dresseur adverse change de fakemon.");
+			dresseur.fakemonSuivant();
+			combatDresseur(sacha, dresseur);
+		}
 		}
 	}
 
-//___________________________________________________________________________________________________
+	//___________________________________________________________________________________________________
 
 	public int calcPointsEquipe(LinkedList<Monster> listeMonstre) {
 		int pts = 0;
 		for (Monster m : listeMonstre) {
-			
-			for (int lv = m.getLevel(); lv > 1; lv--) {
-				pts = m.getExpNextLevel();
+
+			logger.debug("Level du monstre avant boucle = {}!", m.getLevel());
+			for (int lv = m.getLevel()-1; lv >= 1; lv--) {
+				m.setLevel(lv);
+				logger.debug("Level du monstre dans la boucle = {}!", m.getLevel());
+				pts += m.getExpNextLevel();
+				logger.debug("Valeur de pts dans la boucle lv d'un monstre= {}!", pts);
 			}
-			pts=+3;
+			pts += 3;
+			logger.debug("Valeur de pts à la fin d'un monstre = {}!", pts);
 		}
 		return pts;
 	}
@@ -174,12 +184,12 @@ public class FakemonBootApplication {
 	public void arene(Player sacha) {
 
 		System.out.println("\n**(o)***(o)***(o)**\nBienvenue dans l'arène ! Préparez-vous à affronter des adversaires de plus en plus corriaces.");
-		int pts = 35;
+		int pts = 35;	//	Pensez à mettre la nouvelle fonction de calcPoints !
 
 		Dresseur d = new Dresseur("FragileJordan", pts, player);
 		System.out.println("Premier duel d'échauffement contre FragileJordan.");
 		System.out.println(d.toStringEquipe());
-		combatDresseur(player, d);
+		combatDresseur(sacha, d);
 		sacha.soinEquipeJoueur();
 		for (Monster m : d.getEquipeDresseur()) {
 			pts+=m.getExpGain();
@@ -190,8 +200,8 @@ public class FakemonBootApplication {
 			d = new Dresseur(pts, player);
 			System.out.println("Duel numÃ©ro "+(i+1)+" contre "+d.getNom()+".");
 			System.out.println(d.toStringEquipe());
-			combatDresseur(player, d);
-			player.soinEquipeJoueur();
+			combatDresseur(sacha, d);
+			sacha.soinEquipeJoueur();
 			for (Monster m : d.getEquipeDresseur()) {
 				pts+=m.getExpGain();
 			}
@@ -199,23 +209,23 @@ public class FakemonBootApplication {
 		}
 
 		d = new Dresseur("BlackJordan",(int)(pts*1.1574), player);
-		System.out.println("Dernier duel contre le maÃ®tre BlackJordan.");
+		System.out.println("Dernier duel contre le maître BlackJordan.");
 		System.out.println(d.toStringEquipe());
-		combatDresseur(player, d);
-		player.soinEquipeJoueur();
-		System.out.println("Bravo l'arÃ¨ne est finie !");
+		combatDresseur(sacha, d);
+		sacha.soinEquipeJoueur();
+		System.out.println("Bravo l'arène est finie !");
 
 	}
 
-	
+
 	//___________________________________________________________________________________________________
 	//	Méthodes de test de fonction
 	public void run(Player sacha) {
-		sacha.selectionStarter();
-		rencontreSauvage(10);
+		sacha.selectionStarter(player.tableRencontre(6));
+		rencontreSauvage(10, sacha);
 		arene(sacha);
 	}
-	
+
 	public void test1(Player sacha) {
 		ArrayList<Monster> ltArray = player.tableRencontre(3);
 		LinkedList<Monster> ltLinked = new LinkedList<>();
@@ -237,8 +247,8 @@ public class FakemonBootApplication {
 		for (Monster m : sacha.getEquipePlayer()) {
 			m.setContextService(ctxtsvc);
 			m.levelUp();
-		//	m.levelUp();
-		//	m.levelUp();
+			//	m.levelUp();
+			//	m.levelUp();
 		}
 		sacha.getEquipePlayer().getFirst().setPv(0);
 		sacha.changeMonsterActif(1);
@@ -246,17 +256,18 @@ public class FakemonBootApplication {
 			System.out.println(m.toStringGeneral());
 		}
 	}
-	
-	public void init() {
-	Player sacha = new Player();
-	sacha.setPlayerService(player);
-	player.setContext(ctxtsvc);
+
+	public void init(AnnotationConfigApplicationContext monContext) {
+		Player sacha = new Player();
+		player = monContext.getBean(PlayerService.class);
+		ctxtsvc = monContext.getBean(ContextService.class);
+		run(sacha);
 	}
-	
+
 	public static void main(String[] args) {
 		SpringApplication.run(FakemonBootApplication.class, args);
-	//	AnnotationConfigApplicationContext monContext = new AnnotationConfigApplicationContext(FakemonConfig.class);
-	//	monContext.getBeanFactory().createBean(FakemonBootApplication.class).run();
+
+
 	}
 
 }

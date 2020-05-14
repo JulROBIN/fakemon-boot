@@ -26,7 +26,7 @@ import fr.project.service.PlayerService;
 public class GameMechanics {
 	
 	@Autowired
-	Player player;
+	PlayerService player;
 	@Autowired
 	ContextService ctx;
 	

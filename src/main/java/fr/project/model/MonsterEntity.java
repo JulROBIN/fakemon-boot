@@ -44,7 +44,7 @@ public class MonsterEntity {
 	protected Type type; 
 
 	@Column (name ="espece")
-	@JsonView(Views.MonsterP.class)
+	@JsonView(Views.Common.class)
 	protected String espece;
 	
 	@Transient

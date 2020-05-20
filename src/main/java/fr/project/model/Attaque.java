@@ -13,37 +13,50 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
+import fr.project.projection.Views;
+import net.minidev.json.annotate.JsonIgnore;
+
 @Entity
 @Table(name = "attaque")
 public class Attaque implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", nullable = false)
+	@JsonView(Views.Common.class)
 	int id;
 	
 	@Column(name = "puissance", nullable = false)
+	@JsonView(Views.AttaqueP.class)
 	int puissance;
 	
 	@Column(name = "precision", nullable = false)
+	@JsonView(Views.AttaqueP.class)
 	int precision;
 	
 	@Column(name = "nom", length = 20, nullable = false)
+	@JsonView(Views.AttaqueP.class)
 	String nom;
 	
 	@Column(name = "description", length = 100, nullable = true)
+	@JsonView(Views.AttaqueP.class)
 	String description;
 	
 	@Column(name = "etat", length = 10, nullable = false)
+	@JsonView(Views.AttaqueP.class)
 	String etat;
 	
 	@Column(name = "type", length = 15, nullable = false)
 	@Enumerated(EnumType.STRING)
+	@JsonView(Views.AttaqueP.class)
 	Type type;
 	
 	@Column(name = "effet_cumule", length = 25, nullable = true)
 	String effetCumule;
 	
 	@ManyToMany(mappedBy="listAttaque")
+	@JsonIgnore
 	List<MonsterEntity> monstres;
 	
 /** Constructeur vide JPA

@@ -5,6 +5,8 @@ import java.util.Scanner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import fr.project.model.MonsterEntity;
+
 @SpringBootApplication
 public class FakemonBootApplication {
 	
@@ -22,6 +24,7 @@ public class FakemonBootApplication {
 	}	
 	public static void main(String[] args) {
 		SpringApplication.run(FakemonBootApplication.class, args);
+		MonsterEntity m = new MonsterEntity();
 	}
 
 }

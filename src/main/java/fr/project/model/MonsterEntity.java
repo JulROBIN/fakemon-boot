@@ -25,9 +25,9 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 
-import fr.project.service.ContextService;
-import fr.project.service.MonsterService;
+import fr.project.projection.Views;
 
 @Entity
 @Table(name = "fakemons")
@@ -35,33 +35,51 @@ public class MonsterEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonView(Views.Common.class)
 	private int id;
 	
 	@Column(name = "type", length = 15, nullable = false)
 	@Enumerated(EnumType.STRING)
+	@JsonView(Views.MonsterP.class)
 	protected Type type; 
 
 	@Column (name ="espece")
+	@JsonView(Views.MonsterP.class)
 	protected String espece;
 	
 	@Transient
 	protected String nom;
 	
 	@Column(name = "level")
+	@JsonView(Views.MonsterP.class)
 	protected int level; 
+	
 	@Column(name = "pv")
+	@JsonView(Views.MonsterP.class)
 	protected int pv;
+	
 	@Column(name = "pvmax")
+	@JsonView(Views.MonsterP.class)
 	protected int pvMax;
+	
 	@Column(name = "atk")
+	@JsonView(Views.MonsterP.class)
 	protected int atk;	
+	
 	@Column(name = "def")
+	@JsonView(Views.MonsterP.class)
 	protected int def;
+	
 	@Column(name = "aSp")
+	@JsonView(Views.MonsterP.class)
 	protected int aSp;	
+	
 	@Column(name = "dSp")
+	@JsonView(Views.MonsterP.class)
 	protected int dSp;
+	
 	@Column(name = "vit")
+	@JsonView(Views.MonsterP.class)
 	protected int vit;
 	
 
@@ -113,6 +131,7 @@ public class MonsterEntity {
 	protected double modifVit=1;
 	
 	protected double[] tabNature = {1,1,1,1,1,1};
+	
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
 			name = "liste_attaques",
@@ -120,13 +139,16 @@ public class MonsterEntity {
 			joinColumns = @JoinColumn(name = "id_monstre", referencedColumnName = "id"),
 			inverseJoinColumns = @JoinColumn(name = "id_attaque", referencedColumnName = "id")
 		)
+	@JsonView(Views.MonsterP.class)
 	protected List<Attaque> listAttaque = new ArrayList<Attaque>();
 
 	private Situation equipeJoueur = Situation.valueOf("Sauvage");
 
+	@JsonView(Views.MonsterP.class)
 	private int expNextLevel=5;
 	
 	@Column(name="exp")
+	@JsonView(Views.MonsterP.class)
 	private int exp=0;
 	
 	

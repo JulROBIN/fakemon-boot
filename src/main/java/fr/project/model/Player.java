@@ -18,6 +18,10 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+
+import com.fasterxml.jackson.annotation.JsonView;
+
+import fr.project.projection.Views;
 @Entity
 @Table(name= "player")
 //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -25,9 +29,11 @@ public class Player {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonView(Views.Common.class)
 	protected int id;
 	
 	@Column(name="nom")
+	@JsonView(Views.Common.class)
 	protected String nom = "Sacha";
 	
 	@ManyToMany(cascade = CascadeType.ALL)
@@ -37,20 +43,32 @@ public class Player {
 			joinColumns = @JoinColumn(name = "id_player", referencedColumnName = "id"),
 			inverseJoinColumns = @JoinColumn(name = "id_monstre", referencedColumnName = "id")
 		)
+	@JsonView(Views.Player.class)
 	protected List<MonsterEntity> equipePlayer = new LinkedList<MonsterEntity>();
 	//protected ArrayList<Monster> starters = new ArrayList<Monster>();	//	Est-ce-que ça sert vraiment à quelque chose de conserver la liste des starter ???
 	
+	@Column(name="position")
+	@JsonView(Views.Player.class)
 	protected int[] position = new int[] {0,0};
 	
 	@Column(name="id_scene")
+	@JsonView(Views.Player.class)
 	private int idScene = 0;
+	
 	@Column(name="maxRencontre")
+	@JsonView(Views.Player.class)
 	private int maxRencontre = 10;
+	
 	@Column(name="cptRencontre")
+	@JsonView(Views.Player.class)
 	private int cptRencontre = 0;
+	
 	@Column(name="maxArene")
+	@JsonView(Views.Player.class)
 	private int maxArene = 4;
+	
 	@Column(name="cptArene")//	Nombre de dresseur de l'arène, sachant que le 1 et le dernier sont fixé. Doit être >= 2
+	@JsonView(Views.Player.class)
 	private int cptArene = 0;
 
 

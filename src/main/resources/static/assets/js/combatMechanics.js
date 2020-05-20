@@ -21,9 +21,8 @@ $(document).ready(function(){
 		$.ajax({
 			type:'GET',
 			url: 'combat/setup',
-			data:{'activity':'monstersInfos'},
 			success: function(resp){
-				data = JSON.parse(resp)
+				data = resp
 				console.log("SETUP")
 				console.log(data)
 				adversaire = data.adversaire
@@ -40,9 +39,9 @@ $(document).ready(function(){
 				pvBarAdvMon.css("width",pvAdvMonPrg+"%")
 				$("#xp").text(data.attaquant.exp+"/"+data.attaquant.expNextLevel)
 				
-				$("#nomAttaquant").text(attaquant.nom)
+				$("#nomAttaquant").text(attaquant.espece)
 				$("#lvlAttaquant").text("lvl : "+attaquant.level)
-				$("#nomAdv").text(adversaire.nom)
+				$("#nomAdv").text(adversaire.espece)
 				$("#lvlAdv").text("lvl : "+adversaire.level)
 				
 				atks = attaquant.listAttaque
@@ -168,7 +167,7 @@ $(document).ready(function(){
 					listItem = $('<div class="row"></div>')
 					listItemContent = $('<button class="btn btn-link"></button>')
 					listItemContent.click({id : v.uniqueId},switchMonster)
-					listItemContent.text(v.nom+":"+v.id)
+					listItemContent.text(v.espece+":"+v.id)
 					listItem.append(listItemContent)
 					listBody.append(listItem)
 				})

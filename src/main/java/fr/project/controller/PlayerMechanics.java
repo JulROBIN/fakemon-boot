@@ -1,6 +1,7 @@
 package fr.project.controller;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +22,6 @@ import fr.project.dao.IDAOMonsterBase;
 import fr.project.dao.IDAOPlayer;
 import fr.project.model.MonsterEntity;
 import fr.project.model.Player;
-import fr.project.service.MonsterService;
 import fr.project.service.PlayerService;
 
 @Controller
@@ -48,7 +48,11 @@ public class PlayerMechanics {
 	public String selectStarter(@PathVariable int id,HttpServletRequest request) {
 		Player p = daoP.getOne((int)request.getSession().getAttribute("player"));
 		MonsterEntity m = ps.getStarters().stream().filter(monster -> monster.getId() == id).findFirst().get();
+		System.out.println(m);
 		p.addEquipePlayer(m);
+		mb.save(m);
+		daoP.save(p);
+		System.out.println(p);
 		return "";
 	}
 	
@@ -56,7 +60,7 @@ public class PlayerMechanics {
 	@ResponseBody
 	public String popStarter(HttpServletRequest request) {
 		Player p = daoP.getOne((int)request.getSession().getAttribute("player"));
-		Optional<MonsterEntity> response  = ps.getStarters().stream().filter(monster -> !seenMonsters.contains(monster.getId())).findAny();
+		Optional<MonsterEntity> response  = ps.getStarters().stream().findAny();
 		String returnBody = "{}";
 		if(response.isPresent()) {
 			MonsterEntity m = response.get();
@@ -67,6 +71,8 @@ public class PlayerMechanics {
 			} catch (JsonProcessingException e) {
 				e.printStackTrace();
 			}
+		}else {
+			System.err.println("YA PAS");
 		}
 		return returnBody;
 	}
@@ -90,17 +96,19 @@ public class PlayerMechanics {
 	
 	@GetMapping("/infosTest")
 	@ResponseBody
-	public String getPlayerInfosTest(HttpServletRequest request) {
+	public Player getPlayerInfosTest(HttpServletRequest request) {
 		Player p = daoP.getOne((int)request.getSession().getAttribute("player"));
+		System.out.println("Player p "+request.getSession().getAttribute("player"));
+		System.out.println("player objet : "+p);
 		ObjectMapper om = new ObjectMapper();
-		String playerInfos ="";
-		try {
+		String playerInfos ="{}";
+		/*try {
 			 playerInfos = om.writeValueAsString(p);
 			//System.out.println(playerInfos);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
-		}
-		return playerInfos;
+		}*/
+		return p;
 	}
 	
 	@GetMapping("/heal")
@@ -112,28 +120,26 @@ public class PlayerMechanics {
 	
 	@GetMapping("/squad")
 	@ResponseBody
-	public String getSquad(HttpServletRequest request) {
+	public List<MonsterEntity> getSquad(HttpServletRequest request) {
 		Player p = daoP.getOne((int)request.getSession().getAttribute("player"));
 		System.out.println("Accessing squad");
 		int size = p.getEquipePlayer().size();
 		System.out.println("equipe");
-		System.out.println(p.getEquipePlayer());
-		if(size == 0) {
-			p.addEquipePlayer(ps.tableRencontre(1).get(0));
-		}
+		p.getEquipePlayer().forEach(System.out::println);
 		//Gson gson = new Gson();
 		
 		ObjectMapper om = new ObjectMapper();
 		
-		String jsonToReturn = "";
+		/*String jsonToReturn = "";
 		try {
 			
 			jsonToReturn = om.writeValueAsString(p.getEquipePlayer());
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
-		}
+		}*/
 		
-		return jsonToReturn;
+		//return jsonToReturn;
+		return p.getEquipePlayer();
 		
 	}
 	

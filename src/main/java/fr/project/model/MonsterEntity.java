@@ -13,6 +13,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -40,7 +41,10 @@ public class MonsterEntity {
 	@Enumerated(EnumType.STRING)
 	protected Type type; 
 
-	@Column (name ="espece", length = 15, nullable = false, insertable = false, updatable = false)
+	@Column (name ="espece")
+	protected String espece;
+	
+	@Transient
 	protected String nom;
 	
 	@Column(name = "level")
@@ -109,7 +113,7 @@ public class MonsterEntity {
 	protected double modifVit=1;
 	
 	protected double[] tabNature = {1,1,1,1,1,1};
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
 			name = "liste_attaques",
 			uniqueConstraints = @UniqueConstraint(columnNames = { "id_monstre", "id_attaque" }),
@@ -126,8 +130,8 @@ public class MonsterEntity {
 	private int exp=0;
 	
 	
-	
-	public MonsterEntity(double basePV,double baseAtk,double baseDef,double baseASp,double baseDSp,double baseVit,String nom,ArrayList<Attaque> attaques,Type type) {
+	public MonsterEntity() {};
+	public MonsterEntity(double basePV,double baseAtk,double baseDef,double baseASp,double baseDSp,double baseVit,String nom,List<Attaque> attaques,Type type) {
 		this.setLevel(1);
 		this.basePV = basePV;
 		this.baseAtk = baseAtk;
@@ -136,6 +140,7 @@ public class MonsterEntity {
 		this.baseDSp = baseDSp;
 		this.baseVit = baseVit;
 		this.nom = nom;
+		this.espece = nom;
 		this.type = type;
 		this.listAttaque = attaques;
 		generationIV();	
@@ -153,6 +158,13 @@ public class MonsterEntity {
 	}
 
 	
+	
+	public String getEspece() {
+		return espece;
+	}
+	public void setEspece(String espece) {
+		this.espece = espece;
+	}
 	public void setEquipeJoueur() {
         equipeJoueur=Situation.valueOf("Joueur");
     }
@@ -264,8 +276,8 @@ public class MonsterEntity {
 		this.baseAtk = baseAtk;
 	}
 
-	public ArrayList<Attaque> getListAttaque() {
-		return (ArrayList<Attaque>) listAttaque;	
+	public List<Attaque> getListAttaque() {
+		return listAttaque;	
 	}
 
 
@@ -767,6 +779,20 @@ public class MonsterEntity {
 	
 		return "Niveau = " + level + ", Point de Vie = " + pv + ", Attaque = " + atk + ", D�fense = " + def + ", Attaque Spéciale = " + aSp + ", Défense Spéciale = " + dSp + ", Vitesse = " + vit + ", tabNature = " + Arrays.toString(tabNature);
 	
+	}
+	
+	
+
+	@Override
+	public String toString() {
+		return "MonsterEntity [id=" + id + ", type=" + type + ", nom=" + nom + ", level=" + level + ", pv=" + pv
+				+ ", pvMax=" + pvMax + ", atk=" + atk + ", def=" + def + ", aSp=" + aSp + ", dSp=" + dSp + ", vit="
+				+ vit + ", basePV=" + basePV + ", baseAtk=" + baseAtk + ", baseDef=" + baseDef + ", baseASp=" + baseASp
+				+ ", baseDSp=" + baseDSp + ", baseVit=" + baseVit + ", ivPV=" + ivPV + ", ivAtk=" + ivAtk + ", ivDef="
+				+ ivDef + ", ivASp=" + ivASp + ", ivDSp=" + ivDSp + ", ivVit=" + ivVit + ", modifAtk=" + modifAtk
+				+ ", modifDef=" + modifDef + ", modifASp=" + modifASp + ", modifDSp=" + modifDSp + ", modifVit="
+				+ modifVit + ", tabNature=" + Arrays.toString(tabNature) + ", listAttaque=" + listAttaque
+				+ ", equipeJoueur=" + equipeJoueur + ", expNextLevel=" + expNextLevel + ", exp=" + exp + "]";
 	}
 
 	public Situation getEquipeJoueur() {

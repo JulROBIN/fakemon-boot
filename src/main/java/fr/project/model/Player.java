@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,10 +18,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-
-import fr.project.model.MonsterEntity;
 @Entity
 @Table(name= "player")
+//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Player {
 
 	@Id
@@ -30,7 +30,7 @@ public class Player {
 	@Column(name="nom")
 	protected String nom = "Sacha";
 	
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(
 			name = "equipes",
 			uniqueConstraints = @UniqueConstraint(columnNames = { "id_player", "id_monstre" }),

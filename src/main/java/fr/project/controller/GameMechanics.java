@@ -135,7 +135,6 @@ public class GameMechanics {
 	@GetMapping("/arene/pop")
 	@ResponseBody
 	public String getDresseur(HttpServletRequest request) {
-		System.out.println("taille arene : "+ctx.getArene().size());
 		ObjectMapper om = new ObjectMapper();	//	C'est quoi ça ???
 		String dresseur="";
 		System.out.println("dresseur");

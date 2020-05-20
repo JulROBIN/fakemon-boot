@@ -20,7 +20,9 @@ $(document).ready(function(){
 			type:"GET",
 			url:'player/squad',
 			success: function(resp){
-				data = JSON.parse(resp)
+				//data = JSON.parse(resp)
+				data = resp
+				console.log(data)
 				$.each(data,function(index,val){
 					console.log(val)
 					let elemLi = $("<li></li>")
@@ -37,7 +39,7 @@ $(document).ready(function(){
 						console.log("disabling")
 						elem.prop("disabled","true")
 					}else{
-						elem.click({param1:val.uniqueId},versCombat)
+						elem.click({param1:val.id},versCombat)
 					}
 					elemLi.append(elem)
 					elemLi.hover(

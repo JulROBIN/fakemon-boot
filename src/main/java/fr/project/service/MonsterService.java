@@ -75,8 +75,9 @@ public class MonsterService {
 	private int id;
 
 
-	@Autowired
+	
 	@Transient
+	@Autowired
 	private ContextService ctxtsvc;
 
 	private ArrayList<Attaque> listAttaque;
@@ -114,8 +115,10 @@ public class MonsterService {
 	//___________________________________________
 	//	Getters/Setters
 
-	public MonsterEntity createMonsterEntity() {
-		List<Attaque>attaques = ctxtsvc.creationAttaque(this.poolAtkStringToInt(poolAtkString));
+	public MonsterEntity createMonsterEntity(ContextService cs) {
+		System.out.println("context a null ?");
+		System.out.println(ctxtsvc == null);
+		List<Attaque>attaques = cs.creationAttaque(this.poolAtkStringToInt(poolAtkString));
 		MonsterEntity m = new MonsterEntity(basePV, baseAtk, baseDef, baseASp, baseDSp, baseVit, nom, (ArrayList)attaques, type);
 		return m;
 	}
@@ -134,7 +137,7 @@ public class MonsterService {
 
 	/*	System.out.println(listAttaque);
 		listAttaque.parallelStream().forEach(a -> System.out.println(a.getId()+" : "+a));*/
-		Attaque a = listAttaque.parallelStream().filter(atk -> atk.getId() == idMove).findFirst().get();
+		Attaque a = mAtk.getListAttaque().parallelStream().filter(atk -> atk.getId() == idMove).findFirst().get();
 		Random r = new Random();
 		Action action = new Action();
 		action.setM(mDef);
@@ -203,9 +206,10 @@ public class MonsterService {
 	public Attaque choixAttaqueBOT(MonsterEntity m) {
 
 		Random r = new Random();
-		Attaque a = listAttaque.get(r.nextInt(this.listAttaque.size()));
-
-		for (Attaque i : listAttaque) {
+		Attaque a = m.getListAttaque().get(r.nextInt(m.getListAttaque().size()));
+		System.out.println("Bot : "+m.getEspece());
+		for (Attaque i : m.getListAttaque()) {
+			System.out.println("efficacite : "+ctxtsvc.getRatioEfficacite(i,m));
 			if ( ctxtsvc.getRatioEfficacite(i,m) == 2 ) {
 				r = new Random();
 				if( r.nextInt(4) == 0 ) {
@@ -269,6 +273,13 @@ public class MonsterService {
 
 		this.listAttaque = ctxtsvc.poolAttaque(ids);
 		return listAttaque;
+	}
+
+	@Override
+	public String toString() {
+		return "MonsterService [basePV=" + basePV + ", baseAtk=" + baseAtk + ", baseDef=" + baseDef + ", baseASp="
+				+ baseASp + ", baseDSp=" + baseDSp + ", baseVit=" + baseVit + ", type=" + type + ", nom=" + nom
+				+ ", poolAtkString=" + poolAtkString + ", id=" + id + ", listAttaque=" + listAttaque + "]";
 	}
 
 

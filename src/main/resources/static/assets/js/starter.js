@@ -5,8 +5,8 @@
  */
 
 avatarMove = false;
-
 starter = {}
+console.log(starterSelected)
 
 if(!starterSelected){
 	starterPop()
@@ -21,9 +21,10 @@ function starterPop(){
 		type:'POST',
 		url:'player/starter/pop',
 		success:function(resp){
+			console.log("dowload data")
 			console.log(resp)
 			starter = JSON.parse(resp)
-			if(starter.hasOwnProperty('uniqueId')){
+			if(starter.hasOwnProperty('id')){
 				$('#boiteMsg').empty()
 				$('#boiteMsg').append("<p>tu veux tu prendre "+starter.nom+" ?</p><button class='btn btn-link' onclick='yes()'>yes papa</button><button class='btn btn-link' onclick='no()'>no</button>")
 				$('#boiteMsg').css("display","block")
@@ -37,7 +38,7 @@ function yes(){
 	starterSelected = true
 	$.ajax({
 		type:'POST',
-		url:'player/starter/'+starter.uniqueId
+		url:'player/starter/'+starter.id
 	})
 	
 	$('#boiteMsg').empty()

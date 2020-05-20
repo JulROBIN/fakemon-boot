@@ -182,7 +182,9 @@ var starterSelected = false; // je sais pas si c'est vraiment le top de la mettr
 			type:"GET",
 			url:'player/infosTest',
 			success: function(resp){
-				data = JSON.parse(resp)
+				console.log(resp)
+				//data = JSON.parse(resp)
+				data = resp
 				console.log("update position : "+data.idScene+" | "+scene.id)
 				if(data.idScene != scene.id){
 					avatarPosition(scene.startpos[0],scene.startpos[1])
@@ -220,7 +222,9 @@ var starterSelected = false; // je sais pas si c'est vraiment le top de la mettr
 			type:"GET",
 			url:'player/infosTest',
 			success: function(resp){
-				data = JSON.parse(resp)
+				//data = JSON.parse(resp)
+				data = resp
+				console.log(data)
 				$("#playerInfos").empty()
 				list = $("<div class='row font-mine align-items-start' style='height:400px;background-color:#eaeaea;padding:5px; margin-right:5px; border-radius:5px;border:black 2px solid' ></div>")
 				itemContainer = $("<div class='col-6'></div>")
@@ -230,7 +234,7 @@ var starterSelected = false; // je sais pas si c'est vraiment le top de la mettr
 					
 					item = $("<span class='list-group-item dialog-box'></span>")
 					item.css({"box-shadow":"black 2px 0px","margin-bottom":"2px"})
-					item.text(monstre.nom+" [lvl : "+monstre.level+"]")
+					item.text(monstre.espece+" [lvl : "+monstre.level+"]")
 					itemContainer.append(item)
 					
 				})
@@ -257,10 +261,9 @@ var starterSelected = false; // je sais pas si c'est vraiment le top de la mettr
 	function sceneSetupId(id){
 		$.ajax({
 			type:"GET",
-			url:'/fakemon-front/mechanics/scene/'+id,
+			url:'mechanics/scene/'+id,
 			success:function(resp){
 				data = JSON.parse(resp)
-				console.log(data)
 				scene = data
 				sceneSetup()
 			}
@@ -270,19 +273,10 @@ var starterSelected = false; // je sais pas si c'est vraiment le top de la mettr
 			type:"GET",
 			url:'player/infosTest',
 			success:function(resp){
-				data = JSON.parse(resp)
-				//console.log(scene.id+" : "+data.idScene)
-				//if(scene.id != data.idScene){
-					//console.log("onUpdate boiii")
-
-					updatePlayer()
-					//updatePlayerInfos()
-
-					
-				//}else{
-					//console.log("moving boiii")
-					//updatePlayerInfos()
-				//}
+				//data = JSON.parse(resp)
+				data = resp
+				console.log(data)
+				updatePlayer()
 			}
 		});
 	}
@@ -292,7 +286,7 @@ var starterSelected = false; // je sais pas si c'est vraiment le top de la mettr
 			console.log("scene vide")
 			$.ajax({
 				type:"GET",
-				url:'/fakemon-front/mechanics/scene/setup',
+				url:'mechanics/scene/setup',
 				success:function(resp){
 					console.log(resp)
 					data = JSON.parse(resp)
@@ -308,17 +302,7 @@ var starterSelected = false; // je sais pas si c'est vraiment le top de la mettr
 				success:function(resp){
 					data = JSON.parse(resp)
 					console.log(scene.id+" : "+data.idScene)
-					//if(scene.id != data.idScene){
-						/*posX = scene.startpos[0]
-						posY = scene.startpos[1]
-						avatarPosition(posX,posY)*/
-						updatePlayer()
-						//updatePlayerInfos()
-						
-					//}else{
-						//console.log("moving boiii")
-						//updatePlayerInfos()
-					//}
+					updatePlayer()
 				}
 			});
 		}

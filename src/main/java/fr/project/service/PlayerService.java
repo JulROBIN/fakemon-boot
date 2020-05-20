@@ -39,7 +39,7 @@ public class PlayerService {
 	}
 	
 	public List<MonsterEntity> getStarters () {
-
+		System.out.println("table rencontre");
 		ArrayList<MonsterEntity> table2Chen = this.tableRencontre(6);
 		table2Chen.forEach(mi -> System.out.println(mi.toStringGeneral()));
 		return table2Chen;
@@ -60,10 +60,12 @@ public class PlayerService {
 		MonsterEntity m = null;
 
 		for (int i=0;i<nbRencontre;i++) {
-
+			System.out.println("int i : "+i);
 			Random r = new Random();
 			int choixMonstre = r.nextInt(this.context.getDaoMonster().countNombreMonstre());
-			m = this.context.getDaoMonster().findById(choixMonstre+1).get().createMonsterEntity();
+			System.out.println(this.context == null);
+			System.out.println(this.context.getDaoMonster().findById(1).get());
+			m = this.context.getDaoMonster().findById(choixMonstre+1).get().createMonsterEntity(context);
 			tableRencontre.add(m);
 		}
 		return tableRencontre;

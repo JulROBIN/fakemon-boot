@@ -2,6 +2,7 @@ package fr.project.model;
 
 import static fr.project.FakemonBootApplication.saisieInt;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -84,7 +85,6 @@ public class Player {
 	}
 /*	public PlayerService getPlayerService() {
 	}*/
-	}
 	public String getNom() {
 		return nom;
 	}
@@ -92,56 +92,31 @@ public class Player {
 		this.nom = nom;
 	}
 	public int getMaxRencontre() {
-		return maxRencontre;
+		return this.maxRencontre;
 	}
 	public void setMaxRencontre(int maxRencontre) {
 		this.maxRencontre = maxRencontre;
 	}
 	public int getCptRencontre() {
-		return cptRencontre;
+		return this.cptRencontre;
 	}
 	public void setCptRencontre(int cptRencontre) {
 		this.cptRencontre = cptRencontre;
 	}
 	public int getMaxArene() {
-		return maxArene;
+		return this.maxArene;
 	}
 	public void setMaxArene(int maxArene) {
 		this.maxArene = maxArene;
 	}
 	public int getCptArene() {
-		return cptArene;
-	}
-	public void setCptArene(int cptArene) {
-		this.cptArene = cptArene;
-	}
-	public int getMaxRencontre() {
-		return maxRencontre;
-	}
-	public void setMaxRencontre(int maxRencontre) {
-		this.maxRencontre = maxRencontre;
-	}
-	public int getCptRencontre() {
-		return cptRencontre;
-	}
-	public void setCptRencontre(int cptRencontre) {
-		this.cptRencontre = cptRencontre;
-	}
-	public int getMaxArene() {
-		return maxArene;
-	}
-	public void setMaxArene(int maxArene) {
-		this.maxArene = maxArene;
-	}
-	public int getCptArene() {
-		return cptArene;
+		return this.cptArene;
 	}
 	public void setCptArene(int cptArene) {
 		this.cptArene = cptArene;
 	}
 
-	
-	
+
 	//______________________________________________________________________________
 	//	Méthodes
 
@@ -231,7 +206,7 @@ public class Player {
 	
 	/**	Crée une sélection aléatoire de six monstres puis le joueur doit en choisir un comme monstre de départ
 	 **/
-	public void selectionStarter (ArrayList<Monster> table2Chen) {
+	public void selectionStarter (ArrayList<MonsterEntity> table2Chen) {
 
 	//	ArrayList<Monster> table2Chen = player.tableRencontre(6);
 		table2Chen.forEach(mi -> System.out.println(mi.toStringGeneral()));
@@ -244,8 +219,8 @@ public class Player {
 		System.out.println("Ses moves sont : "+table2Chen.get(i-1).toStringDetailAttaque());
 		System.out.println("Ses statistiques sont : "+table2Chen.get(i-1).toStringDetailStat()+"\n");
 	}
-	 **/
-	public Monster rencontreSauvage(Monster m) {
+	
+	public MonsterEntity rencontreSauvage(MonsterEntity m) {
 		this.cptRencontre++;
 //		Monster  m = null;
 		if(this.cptRencontre <= this.maxRencontre) {

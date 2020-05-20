@@ -25,9 +25,6 @@ import javax.persistence.UniqueConstraint;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import fr.project.service.ContextService;
-import fr.project.service.MonsterService;
-
 @Entity
 @Table(name = "fakemons")
 public class MonsterEntity {
@@ -405,6 +402,14 @@ public class MonsterEntity {
 	public void setExp(int exp) {
 		this.exp = exp;
 	}
+	
+	public int getExpNextLevel() {
+		return expNextLevel;
+	}
+
+	public void setExpNextLevel(int expNextLevel) {
+		this.expNextLevel = expNextLevel;
+	}
 
 	/**	Défini les IV (les statistiques cachées) du fakemon
 	 *  N'est appellée que dans le constructeur et à aucun autre moment pour ne pas modifier ces valeurs en cours de route
@@ -454,13 +459,7 @@ public class MonsterEntity {
 		vit = (int) (5+((baseVit+ivVit)*tabNature[5]*(level*cstLv)));
 	}
 
-	public int getExpNextLevel() {
-		return expNextLevel;
-	}
 
-	public void setExpNextLevel(int expNextLevel) {
-		this.expNextLevel = expNextLevel;
-	}
 	
 
 
@@ -589,14 +588,14 @@ public class MonsterEntity {
 	 * Si c'est un monstre sauvage ou de dresseur, on utilise la méthode automatique
 	 * @param m Monster ; Il s'agit du monstre adverse. Le monstre qui lance attaque est le "this"
 	 * @throws PVException
-	 
+	 **/
 	@JsonIgnore
 	public void selectionAttaqueCombat(MonsterEntity m) throws PVException {
 		//		Boolean qui permet soit au joueur de choisir son attaque, soit à l'IA de le faire
-		Attaque a = (equipeJoueur.equals(Situation.valueOf("Joueur"))) ? choixAttaque() : choixAttaqueBOT(m);	
-		combat(m,a.getId());
+	//	Attaque a = (equipeJoueur.equals(Situation.valueOf("Joueur"))) ? choixAttaque() : choixAttaqueBOT(m);	
+	//	combat(m,a.getId());
 
-	}*/
+	}
 	
 
 	

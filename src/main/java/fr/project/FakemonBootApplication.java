@@ -12,7 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import fr.project.model.Dresseur;
-import fr.project.model.Monster;
+import fr.project.model.MonsterEntity;
 import fr.project.model.PVException;
 import fr.project.model.Player;
 import fr.project.service.ContextService;
@@ -47,23 +47,23 @@ public class FakemonBootApplication {
 	 * La sortie d'une PVexception dans la fonction combat apppelee signifie que l'un des deux monstre au combat est KO
 	 * @param m1 : Monster ; le monstre du joueur, cad le premier de sa liste au debut du combat puis celui actif lors des tours suivants (si KO ou switch)
 	 * @param m2 : Monster ; Le monstre sauvage ou du dresseur adverse
-	 **/
-	public void combat(Player sacha, Monster m2){
+	**/
+	public void combat(Player sacha, MonsterEntity m2){
 
-		Monster m1 = sacha.getEquipePlayer().getFirst();
+		MonsterEntity m1 = sacha.getEquipePlayer().getFirst();
 		try {
 			while (m1.getPv()>0 && m2.getPv()>0) {
 				if (m1.initiative(m2).equals(m1)) {
 					System.out.println(m1.getNom()+" attaque "+m2.getNom()+" en premier");
-					m1.selectionAttaqueCombat(m2, ctxtsvc);
+					m1.selectionAttaqueCombat(m2);
 					System.out.println(m2.getNom()+" attaque "+m1.getNom());
-					m2.selectionAttaqueCombat(m1, ctxtsvc);
+					m2.selectionAttaqueCombat(m1);
 				}
 				else {
 					System.out.println(m2.getNom()+" attaque "+m1.getNom()+" en premier");
-					m2.selectionAttaqueCombat(m1, ctxtsvc);
+					m2.selectionAttaqueCombat(m1);
 					System.out.println(m1.getNom()+" attaque "+m2.getNom());
-					m1.selectionAttaqueCombat(m2, ctxtsvc);
+					m1.selectionAttaqueCombat(m2);
 				}
 			}
 		}
@@ -73,7 +73,7 @@ public class FakemonBootApplication {
 			combat(sacha, m2);
 		}
 		}
-	}
+	} 
 
 	/** Permet de lancer plusieurs combat contre des monstres sauvages gÃ©nÃ©rÃ©s alÃ©atoirement
 	 * Pour le moment, le nombre de rencontres est parametrÃ© de base avec 10 en entrÃ©
@@ -84,9 +84,9 @@ public class FakemonBootApplication {
 	public void rencontreSauvage(int nbSauvage, Player sacha) {
 
 		System.out.println("Vous allez rencontrer "+nbSauvage+" Fakemon sauvages.");
-		Monster m = null;	
+		MonsterEntity m = null;	
 
-		ArrayList<Monster> fakemonSauvage = new ArrayList<Monster>();
+		ArrayList<MonsterEntity> fakemonSauvage = new ArrayList<MonsterEntity>();
 		fakemonSauvage = player.tableRencontre(nbSauvage);
 
 		for(int i=0;i<nbSauvage;i++) {
@@ -108,8 +108,8 @@ public class FakemonBootApplication {
 	}
 
 	public void combatDresseur(Player sacha, Dresseur dresseur){
-		Monster mPlayer = sacha.getEquipePlayer().getFirst();
-		Monster mDresseur = dresseur.getEquipeDresseur().getFirst();
+		MonsterEntity mPlayer = sacha.getEquipePlayer().getFirst();
+		MonsterEntity mDresseur = dresseur.getEquipeDresseur().getFirst();
 		String scString = "chose"; int scInt = 0;
 		try {
 			while (mPlayer.getPv()>0 && mDresseur.getPv()>0) {
@@ -118,22 +118,22 @@ public class FakemonBootApplication {
 				}
 				if(scString.equalsIgnoreCase("y")) {
 					while (scInt < 1 || scInt > sacha.getEquipePlayer().size()) {
-						for (Monster m : sacha.getEquipePlayer()) {System.out.println(m.toStringGeneralPV());}
+						for (MonsterEntity m : sacha.getEquipePlayer()) {System.out.println(m.toStringGeneralPV());}
 						scInt = saisieInt("Quel monstre voulez-vous en monstre actif?");
 					}
 					sacha.changeMonsterActif(scInt);
 				}
 				else if (mPlayer.initiative(mDresseur).equals(mPlayer)) {
 					System.out.println("Votre "+mPlayer.getNom()+" attaque le "+mDresseur.getNom()+" adverse en premier");
-					mPlayer.selectionAttaqueCombat(mDresseur, ctxtsvc);
+					mPlayer.selectionAttaqueCombat(mDresseur);
 					System.out.println("Le "+mDresseur.getNom()+" adverse attaque votre "+mPlayer.getNom());
-					mDresseur.selectionAttaqueCombat(mPlayer, ctxtsvc);
+					mDresseur.selectionAttaqueCombat(mPlayer);
 				}
 				else {
 					System.out.println("Le "+mDresseur.getNom()+" adverse attaque votre "+mPlayer.getNom()+" en premier");
-					mDresseur.selectionAttaqueCombat(mPlayer, ctxtsvc);
+					mDresseur.selectionAttaqueCombat(mPlayer);
 					System.out.println("Votre "+mPlayer.getNom()+" attaque le "+mDresseur.getNom()+" adverse");
-					mPlayer.selectionAttaqueCombat(mDresseur, ctxtsvc);
+					mPlayer.selectionAttaqueCombat(mDresseur);
 				}
 			}
 		}
@@ -153,9 +153,9 @@ public class FakemonBootApplication {
 
 	//___________________________________________________________________________________________________
 
-	public int calcPointsEquipe(LinkedList<Monster> listeMonstre) {
+	public int calcPointsEquipe(LinkedList<MonsterEntity> listeMonstre) {
 		int pts = 0;
-		for (Monster m : listeMonstre) {
+		for (MonsterEntity m : listeMonstre) {
 
 			logger.debug("Level du monstre avant boucle = {}!", m.getLevel());
 			for (int lv = m.getLevel()-1; lv >= 1; lv--) {
@@ -191,7 +191,7 @@ public class FakemonBootApplication {
 		System.out.println(d.toStringEquipe());
 		combatDresseur(sacha, d);
 		sacha.soinEquipeJoueur();
-		for (Monster m : d.getEquipeDresseur()) {
+		for (MonsterEntity m : d.getEquipeDresseur()) {
 			pts+=m.getExpGain();
 		}
 		pts=(int)(pts*1.08);
@@ -202,7 +202,7 @@ public class FakemonBootApplication {
 			System.out.println(d.toStringEquipe());
 			combatDresseur(sacha, d);
 			sacha.soinEquipeJoueur();
-			for (Monster m : d.getEquipeDresseur()) {
+			for (MonsterEntity m : d.getEquipeDresseur()) {
 				pts+=m.getExpGain();
 			}
 			pts=(int)(pts*1.08);
@@ -227,12 +227,12 @@ public class FakemonBootApplication {
 	}
 
 	public void test1(Player sacha) {
-		ArrayList<Monster> ltArray = player.tableRencontre(3);
-		LinkedList<Monster> ltLinked = new LinkedList<>();
+		ArrayList<MonsterEntity> ltArray = player.tableRencontre(3);
+		LinkedList<MonsterEntity> ltLinked = new LinkedList<>();
 		ltLinked.addAll(ltArray);
 		sacha.setEquipePlayer(ltLinked);
-		for (Monster m : sacha.getEquipePlayer()) {
-			m.setContextService(ctxtsvc);
+		for (MonsterEntity m : sacha.getEquipePlayer()) {
+		//	m.setContextService(ctxtsvc);
 			m.levelUp();
 			m.levelUp();
 			m.levelUp();
@@ -240,19 +240,19 @@ public class FakemonBootApplication {
 		arene(sacha);
 	}
 	public void test(Player sacha) {
-		ArrayList<Monster> ltArray = player.tableRencontre(3);
-		LinkedList<Monster> ltLinked = new LinkedList<>();
+		ArrayList<MonsterEntity> ltArray = player.tableRencontre(3);
+		LinkedList<MonsterEntity> ltLinked = new LinkedList<>();
 		ltLinked.addAll(ltArray);
 		sacha.setEquipePlayer(ltLinked);
-		for (Monster m : sacha.getEquipePlayer()) {
-			m.setContextService(ctxtsvc);
+		for (MonsterEntity m : sacha.getEquipePlayer()) {
+		//	m.setContextService(ctxtsvc);
 			m.levelUp();
 			//	m.levelUp();
 			//	m.levelUp();
 		}
 		sacha.getEquipePlayer().getFirst().setPv(0);
 		sacha.changeMonsterActif(1);
-		for (Monster m : sacha.getEquipePlayer()) {
+		for (MonsterEntity m : sacha.getEquipePlayer()) {
 			System.out.println(m.toStringGeneral());
 		}
 	}

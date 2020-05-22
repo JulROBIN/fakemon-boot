@@ -7,13 +7,15 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,7 +26,8 @@ import fr.project.model.MonsterEntity;
 import fr.project.model.Player;
 import fr.project.service.PlayerService;
 
-@Controller
+@RestController
+@CrossOrigin("*")
 @RequestMapping("/player")
 public class PlayerMechanics {
 	@Autowired
@@ -43,23 +46,20 @@ public class PlayerMechanics {
 	 * @param id (un UUID en string)
 	 * @return
 	 */
-	@PostMapping("/starter/{id}")
+	@PostMapping("{id}/starter/")
 	@ResponseBody
-	public String selectStarter(@PathVariable int id,HttpServletRequest request) {
-		Player p = daoP.getOne((int)request.getSession().getAttribute("player"));
-		MonsterEntity m = ps.getStarters().stream().filter(monster -> monster.getId() == id).findFirst().get();
-		System.out.println(m);
+	public MonsterEntity selectStarter(@PathVariable int id,@RequestBody MonsterEntity m) {
+		Player p = daoP.getOne(id);
 		p.addEquipePlayer(m);
 		mb.save(m);
 		daoP.save(p);
-		System.out.println(p);
-		return "";
+		return m;
 	}
 	
-	@PostMapping("/starter/pop")
+	@GetMapping("{id}/starter/pop")
 	@ResponseBody
-	public String popStarter(HttpServletRequest request) {
-		Player p = daoP.getOne((int)request.getSession().getAttribute("player"));
+	public String popStarter(@PathVariable int id) {
+		Player p  = daoP.getOne(id);
 		Optional<MonsterEntity> response  = ps.getStarters().stream().findAny();
 		String returnBody = "{}";
 		if(response.isPresent()) {
@@ -68,6 +68,25 @@ public class PlayerMechanics {
 			ObjectMapper om = new ObjectMapper();
 			try {
 				returnBody = om.writeValueAsString(m);
+			} catch (JsonProcessingException e) {
+				e.printStackTrace();
+			}
+		}else {
+			System.err.println("YA PAS");
+		}
+		return returnBody;
+	}
+	
+	@GetMapping("/starter")
+	@ResponseBody
+	public String getStarters(HttpServletRequest request) {
+
+		List<MonsterEntity> response  = ps.getStarters();
+		String returnBody = "{}";
+		if(!response.isEmpty()) {
+			ObjectMapper om = new ObjectMapper();
+			try {
+				returnBody = om.writeValueAsString(response);
 			} catch (JsonProcessingException e) {
 				e.printStackTrace();
 			}

@@ -7,12 +7,13 @@ import java.util.Random;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -22,7 +23,8 @@ import fr.project.model.Player;
 import fr.project.service.ContextService;
 import fr.project.service.PlayerService;
 
-@Controller
+@RestController
+@CrossOrigin("*")
 @RequestMapping("/mechanics")
 public class GameMechanics {
 	
@@ -86,7 +88,7 @@ public class GameMechanics {
 	@ResponseBody
 	public String getSceneById(@PathVariable int id, HttpServletRequest request) {
 		
-		Player p = daoP.getOne((int)request.getSession().getAttribute("player"));
+		Player p = daoP.getOne(1);
 		
 		String rencontre = "";
 		if(p.peutRencontrer()) {
@@ -94,7 +96,7 @@ public class GameMechanics {
 			rencontre =  "["+r.nextInt(9)+","+(r.nextInt(4)+5)+"]";
 		}
 		ArrayList<String> scenes = new ArrayList<String>();
-		String interaction0 = "[{\"pos\" : [3,1],\"event_type\" : \"script\", \"script\" : \"assets/js/starter.js\",\"prop\" : {\"pos\":[3,0],\"asset\":\"assets/img/Poke-Ball-32.png\"}}]";
+		String interaction0 = "[{\"pos\" : [3,1],\"event_type\" : \"selection_starter\",\"prop\" : {\"pos\":[3,0],\"offset\":\"top\",\"asset\":\"assets/img/Poke-Ball-32.png\"}}]";
 		String goAilleurs = "[{\"pos\" : [9,5],\"orientation\" : \"east\",\"id\" : 2},{\"pos\" : [5,9],\"orientation\" : \"south\",\"id\" : 3}]";
 		String style0 = "{\"portail\" : \"assets/img/peronIndoor.png\"}";
 		String scene0 = "{\"type\" : \"indoor\",\"style\" :"+style0+",\"id\" : 1, \"nowalk\" : {\"0\":[0,1,2,3,4,5,6,7,8]}, \"triggers\" : {\"encounter\":[],\"interact\" : "+interaction0+",\"scenes\" : "+goAilleurs+"}, \"startpos\" : [5,5], \"background\" : \"assets/img/fond2.png\"}";
@@ -116,11 +118,6 @@ public class GameMechanics {
 		return scenes.get(id-1);
 	}
 	
-	@GetMapping("/select")
-	public String getSelectMenu() {
-		System.out.println("Go select");
-		return "selectMonster";
-	}
 	
 	public void generateArena(HttpServletRequest request) {
 		LinkedList<Dresseur> arene = new LinkedList<Dresseur>();

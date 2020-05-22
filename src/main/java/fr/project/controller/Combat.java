@@ -1,23 +1,29 @@
 package fr.project.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.project.dao.IDAOMonster;
+import fr.project.dao.IDAOMonsterBase;
 import fr.project.dao.IDAOPlayer;
 import fr.project.model.Action;
 import fr.project.model.Dresseur;
@@ -28,7 +34,8 @@ import fr.project.service.ContextService;
 import fr.project.service.MonsterService;
 import fr.project.service.PlayerService;
 
-@Controller
+@RestController
+@CrossOrigin("*")
 @RequestMapping("/combat")
 public class Combat {
 
@@ -47,26 +54,11 @@ public class Combat {
 	Player p;
 	
 	@Autowired
-	IDAOMonster daoM;
+	IDAOMonster daoMService;
 	
-	@PostMapping("/")
-	public String launchCombat(@RequestParam Map<String,String> data, HttpServletRequest request) {
-		p = daoP.getOne((int)request.getSession().getAttribute("player"));
-		System.out.println(p == null);
-		System.out.println("Test "+data.get("mstrId"));
-		System.out.println("taille equipe : "+p.getEquipePlayer().size());
-		MonsterEntity playerMonster =  p.getEquipePlayer().stream().filter(m -> m.getId() == Integer.valueOf(data.get("mstrId"))).findAny().get();
-		request.getSession().setAttribute("attaquant", playerMonster);
-		try {
-			if(request.getSession().getAttribute("localisation").equals("wilds")) {
-				request.getSession().setAttribute("adversaire", player.tableRencontre(1).get(0));
-			}
-		}catch(Exception e) {
-			System.out.println("pas d'attribut \"location\"");
-		}
-		
-		return "combat";
-	}
+	@Autowired
+	IDAOMonsterBase daoM;
+	
 	
 	@PostMapping("switch")
 	@ResponseBody
@@ -124,7 +116,32 @@ public class Combat {
 		return parametres;
 	}
 	
-	@PostMapping("/attaque")
+	
+	@PostMapping("/attaque/{id}")
+	public List<Action> combatAngu(@RequestBody List<MonsterEntity> monstres, @PathVariable int id) {
+		MonsterEntity attaquant = monstres.get(0);
+		MonsterEntity defenseur = monstres.get(1);
+		Action act = new Action();
+		try {
+			
+			act = ms.combat(defenseur,attaquant,id);
+			
+
+		} catch (PVException e) {
+			e.printStackTrace();
+			attaquant.getExpGain();
+			daoM.save(attaquant);
+			defenseur.setPv(0);
+			act.setM(defenseur);
+			act.setMessage(defenseur.getEspece()+" a été oblitéré");
+
+		}
+		
+		return Arrays.asList(new Action(attaquant,"coucou"),act);
+	}
+	
+	
+	@PostMapping("/attaqueVieux")
 	@ResponseBody
 	public String combat(@RequestParam Map<String,String> data, HttpServletRequest request) {
 		ObjectMapper om = new ObjectMapper();

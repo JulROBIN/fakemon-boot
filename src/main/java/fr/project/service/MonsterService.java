@@ -135,8 +135,10 @@ public class MonsterService {
 	@JsonIgnore
 	public Action combat(MonsterEntity mDef,MonsterEntity mAtk, int idMove) throws PVException {
 
-	/*	System.out.println(listAttaque);
+		/*System.out.println(listAttaque);
+		
 		listAttaque.parallelStream().forEach(a -> System.out.println(a.getId()+" : "+a));*/
+		mAtk.getListAttaque().forEach(a -> System.out.println(a.getNom()+" "+a.getId()));
 		Attaque a = mAtk.getListAttaque().parallelStream().filter(atk -> atk.getId() == idMove).findFirst().get();
 		Random r = new Random();
 		Action action = new Action();

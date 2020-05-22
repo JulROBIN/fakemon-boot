@@ -113,20 +113,10 @@ public class PlayerMechanics {
 		return "{ \"playerPos\" : ["+p.getPosition()[0]+","+p.getPosition()[1]+"]}";
 	}
 	
-	@GetMapping("/infosTest")
+	@GetMapping("/{id}")
 	@ResponseBody
-	public Player getPlayerInfosTest(HttpServletRequest request) {
-		Player p = daoP.getOne((int)request.getSession().getAttribute("player"));
-		System.out.println("Player p "+request.getSession().getAttribute("player"));
-		System.out.println("player objet : "+p);
-		ObjectMapper om = new ObjectMapper();
-		String playerInfos ="{}";
-		/*try {
-			 playerInfos = om.writeValueAsString(p);
-			//System.out.println(playerInfos);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}*/
+	public Player getPlayerInfosTest(@PathVariable int id) {
+		Player p = daoP.getOne(id);
 		return p;
 	}
 	

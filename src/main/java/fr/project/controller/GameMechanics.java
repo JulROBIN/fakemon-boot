@@ -68,7 +68,7 @@ public class GameMechanics {
 		String scene1 = "{\"type\" : \"wilds\",\"style\" :"+style1+",\"id\" : 2, \"nowalk\" : {}, \"triggers\" : {\"encounter\":"+rencontre+",\"interact\" : "+interaction1+",\"scenes\" : "+goAilleurs1+"}, \"startpos\" : [0,5], \"background\" : \"assets/img/outdoor.png\"}";
 		
 		
-		String interaction2 = "[]";
+		String interaction2 = "[{\"pos\":[],\"event_type\":\"trainer\",\"dialogs\":[\"Croustibat\', tu pourra aps me bat\' ! \"]}]";
 		String goAilleurs2 = "[{\"pos\" : [5,0],\"orientation\" : \"north\",\"id\" : 1}]";
 		String style2 = "{\"portail\" : \"assets/img/peronIndoor.png\"}";
 		String scene2 = "{\"type\" : \"arena\",\"script\" : \"assets/js/arene.js\",\"style\" :"+style2+",\"id\" : 3, \"nowalk\" : {\"4\":[0,1,2,3,4,5,6,7]}, \"triggers\" : {\"encounter\":[],\"interact\" : "+interaction2+",\"scenes\" : "+goAilleurs2+"}, \"startpos\" : [5,0], \"background\" : \"assets/img/fondScene.png\"}";
@@ -106,15 +106,22 @@ public class GameMechanics {
 		String style1 = "{\"portail\" : \"assets/img/peronOutdoor.png\"}";
 		String scene1 = "{\"type\" : \"wilds\",\"style\" :"+style1+",\"id\" : 2, \"nowalk\" : {}, \"triggers\" : {\"encounter\":"+rencontre+",\"interact\" : "+interaction1+",\"scenes\" : "+goAilleurs1+"}, \"startpos\" : [0,5], \"background\" : \"assets/img/outdoor.png\"}";
 		
-		
-		String interaction2 = "[]";
-		String goAilleurs2 = "[{\"pos\" : [5,0],\"orientation\" : \"north\",\"id\" : 1}]";
+	
+		String interaction2 = "[{\"pos\":[5,8],\"event_type\":\"trainer\",\"dialogs\":[\"Croustibat\', tu pourra pas me bat\' ! \"],\"prop\" : {\"pos\":[5,8],\"asset\":\"assets/img/monsters/basicTrainer2.png\"}}]";
+		String goAilleurs2 = "[{\"pos\" : [5,0],\"orientation\" : \"north\",\"id\" : 1},{\"pos\" : [5,9],\"orientation\" : \"south\",\"id\" : 4}]";
 		String style2 = "{\"portail\" : \"assets/img/peronIndoor.png\"}";
-		String scene2 = "{\"script\" : \"assets/js/arene.js\",\"type\":\"arena\",\"style\" :"+style2+",\"id\" : 3, \"nowalk\" : {\"4\":[0,1,2,3,4,5,6,7]}, \"triggers\" : {\"encounter\":[],\"interact\" : "+interaction2+",\"scenes\" : "+goAilleurs2+"}, \"startpos\" : [5,0], \"background\" : \"assets/img/fondScene.png\"}";
+		String scene2 = "{\"type\":\"arena\",\"style\" :"+style2+",\"id\" : 3, \"nowalk\" : {\"0\":[4,6],\"1\":[4,6],\"2\":[4,6],\"3\":[4,6],\"4\":[4,6],\"5\":[4,6],\"6\":[4,6],\"7\":[4,6],\"8\":[4,6],\"9\":[4,6]}, \"triggers\" : {\"encounter\":[],\"interact\" : "+interaction2+",\"scenes\" : "+goAilleurs2+"}, \"startpos\" : [5,0], \"background\" : \"assets/img/fondScene2.png\"}";
 
+		String interaction3 = "[{\"pos\":[5,8],\"event_type\":\"trainer\",\"dialogs\":[\"Omae wa mo shindeiru ! \"],\"prop\" : {\"pos\":[5,8],\"asset\":\"assets/img/BJ.png\"}}]";
+		String goAilleurs3 = "[{\"pos\" : [5,0],\"orientation\" : \"north\",\"id\" : 3}]";
+		String style3 = "{\"portail\" : \"assets/img/peronIndoor.png\"}";
+		String scene3 = "{\"type\":\"arena\",\"style\" :"+style3+",\"id\" : 4, \"nowalk\" : {\"0\":[4,6],\"1\":[4,6],\"2\":[4,6],\"3\":[4,6],\"4\":[4,6],\"5\":[4,6],\"6\":[4,6],\"7\":[4,6],\"8\":[4,6],\"9\":[4,6]}, \"triggers\" : {\"encounter\":[],\"interact\" : "+interaction3+",\"scenes\" : "+goAilleurs3+"}, \"startpos\" : [5,0], \"background\" : \"assets/img/fondScene2.png\"}";
+
+		
 		scenes.add(scene0);
 		scenes.add(scene1);
 		scenes.add(scene2);
+		scenes.add(scene3);
 		return scenes.get(id-1);
 	}
 	
